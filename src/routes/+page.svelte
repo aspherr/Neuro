@@ -30,21 +30,26 @@
   </div>
 
   <div class="text-center">
-    <h1 class="text-5xl font-bold -mt-7">Neuro</h1>
-    <p class="text-base text-gray-400">Version: {appVersion}</p>
+    <h1 class="Satoshi font-bold text-5xl -mt-7">Neuro</h1>
+    <p class="Satoshi text-base text-gray-400">Version: {appVersion}</p>
   </div>
 
-  <div class="mt-10 w-full flex flex-col items-center">
-    <div class="w-64 flex flex-col space-y-3">
-      <button class="w-full py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition" onclick={createVault}>
+  <div class="mt-11 w-full flex flex-col items-center">
+    <div class="Satoshi font-base text-lg w-64 flex flex-col space-y-3">
+      
+      <button class="w-full py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition antialiased" onclick={createVault}>
         Create Vault
       </button>
+      
       <button class="w-full py-3 bg-gray-700 text-white rounded-lg hover:bg-gray-800 transition" onclick={openVault}>
         Open Vault
       </button>
+
       <button class="w-full py-3 bg-gray-700 text-white rounded-lg hover:bg-gray-800 transition" onclick={openSyncedVault}>
         Open Synced Vault
       </button>
     </div>
+  
   </div>
+
 </main>
