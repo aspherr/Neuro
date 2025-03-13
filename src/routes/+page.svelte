@@ -35,21 +35,27 @@
   </div>
 
   <div class="mt-11 w-full flex flex-col items-center">
-    <div class="Satoshi font-base text-lg w-64 flex flex-col space-y-3">
-      
-      <button class="w-full py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition antialiased" onclick={createVault}>
-        Create Vault
-      </button>
-      
-      <button class="w-full py-3 bg-gray-700 text-white rounded-lg hover:bg-gray-800 transition" onclick={openVault}>
-        Open Vault
-      </button>
+    <div class="w-full max-w-md mx-auto mt-6 space-y-3">
 
-      <button class="w-full py-3 bg-gray-700 text-white rounded-lg hover:bg-gray-800 transition" onclick={openSyncedVault}>
-        Open Synced Vault
-      </button>
-    </div>
+      <div class="flex justify-between items-center px-4 py-3 border-b border-gray-700">
+          <div>
+              <h3 class="text-white text-lg font-medium">Create new vault</h3>
+              <p class="text-gray-400 text-sm">Create a new Neuro vault under a folder.</p>
+          </div>
+          <button class="w-24 h-10 bg-orange-700 text-white rounded-md hover:bg-orange-600 transition antialiased">
+              Create
+          </button>
+      </div>
   
-  </div>
 
+      <div class="flex justify-between items-center px-4 py-3 border-b border-gray-700">
+          <div>
+              <h3 class="text-white text-lg font-medium">Open folder as vault</h3>
+              <p class="text-gray-400 text-sm">Choose an existing folder of Markdown files.</p>
+          </div>
+          <button class="w-24 h-10 bg-gray-700 text-white rounded-md hover:bg-gray-600 transition">
+              Open
+          </button>
+      </div>
+  </div>
 </main>
