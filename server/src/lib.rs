@@ -2,8 +2,8 @@ use log::info;
 use simple_logger;
 
 #[tauri::command]
-fn get_app_version(app_handle: tauri::AppHandle) -> String {
-    app_handle
+fn get_app_version(app: tauri::AppHandle) -> String {
+    app
     .package_info()
     .version
     .to_string()
@@ -21,6 +21,7 @@ pub fn run() {
     
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_dialog::init())
         .invoke_handler(tauri::generate_handler![get_app_version, logger])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

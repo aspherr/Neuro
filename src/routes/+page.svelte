@@ -1,24 +1,27 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { invoke } from '@tauri-apps/api/core';
+  import { open } from '@tauri-apps/plugin-dialog';
 
   let appVersion = 'loading...';
   onMount(async() => {
     appVersion = await invoke ('get_app_version');
   });
 
-  function createVault() {
-    const message = "vault created";
-    invoke("logger", { message });
+  const openFinder = async () => {
+    try {
+      const path = await open({
+        multiple: false
+      });
+      console.log(path);
+      
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   function openVault() {
     const message = "vault opened";
-    invoke("logger", { message });
-  }
-
-  function openSyncedVault() {
-    const message = "synced vault opened";
     invoke("logger", { message });
   }
 </script>
@@ -42,7 +45,8 @@
               <h3 class="text-white text-lg font-medium">Create new vault</h3>
               <p class="text-gray-400 text-sm">Create a new Neuro vault under a folder.</p>
           </div>
-          <button class="w-24 h-10 bg-orange-700 text-white rounded-md hover:bg-orange-600 transition antialiased">
+          <button class="w-24 h-10 bg-orange-700 text-white rounded-md hover:bg-orange-600 transition antialiased"
+          onclick={openFinder}>
               Create
           </button>
       </div>
@@ -53,7 +57,8 @@
               <h3 class="text-white text-lg font-medium">Open folder as vault</h3>
               <p class="text-gray-400 text-sm">Choose an existing folder of Markdown files.</p>
           </div>
-          <button class="w-24 h-10 bg-gray-700 text-white rounded-md hover:bg-gray-600 transition">
+          <button class="w-24 h-10 bg-gray-700 text-white rounded-md hover:bg-gray-600 transition"
+          onclick={openVault}>
               Open
           </button>
       </div>
