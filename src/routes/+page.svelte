@@ -11,10 +11,11 @@
   const openFinder = async () => {
     try {
       const path = await open({
+        directory: true,
         multiple: false
       });
       console.log(path);
-      
+
     } catch (err) {
       console.error(err);
     }
