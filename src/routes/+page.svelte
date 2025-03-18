@@ -1,12 +1,18 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { invoke } from '@tauri-apps/api/core';
+  import { goto } from '$app/navigation';
   import { open } from '@tauri-apps/plugin-dialog';
 
   let appVersion = 'loading...';
+
   onMount(async() => {
     appVersion = await invoke ('get_app_version');
   });
+
+  function createVault() {
+    goto("/create-vault");
+  }
 
   const openFinder = async () => {
     try {
@@ -20,16 +26,11 @@
       console.error(err);
     }
   }
-
-  function openVault() {
-    const message = "vault opened";
-    invoke("logger", { message });
-  }
-</script>
+</script> 
 
 
 <main class="h-screen w-screen bg-zinc-900 text-white">
-  <div class="">
+  <div>
     <img src="/logo.png" alt="Neuro Logo" class="w-42 h-48 mx-auto pt-6"/>
   </div>
 
@@ -47,7 +48,7 @@
               <p class="text-gray-400 text-sm">Create a new Neuro vault under a folder.</p>
           </div>
           <button class="w-24 h-10 bg-orange-700 text-white rounded-md hover:bg-orange-600 transition antialiased"
-          onclick={openFinder}>
+          onclick={createVault}>
               Create
           </button>
       </div>
@@ -59,7 +60,7 @@
               <p class="text-gray-400 text-sm">Choose an existing folder of Markdown files.</p>
           </div>
           <button class="w-24 h-10 bg-gray-700 text-white rounded-md hover:bg-gray-600 transition"
-          onclick={openVault}>
+          onclick={openFinder}>
               Open
           </button>
       </div>
