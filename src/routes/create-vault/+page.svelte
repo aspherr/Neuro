@@ -15,11 +15,15 @@
 
     const openFinder = async () => {
         try {
-        const path = await open({
+        const selectedPath = await open({
             directory: true,
             multiple: false
         });
-        console.log(path);
+
+        if (selectedPath) {
+            console.log(selectedPath);
+            path = selectedPath
+        }
 
         } catch (err) {
         console.error(err);
@@ -61,7 +65,7 @@
                     class="flex-1 bg-zinc-700 text-gray-400 p-3 rounded-md"/>
             <button class="bg-gray-700 text-white px-4 py-2 rounded-md hover:bg-gray-600" onclick={openFinder}>Browse</button>
         </div>
-        
+
         <button onclick={createVault} 
                 class="w-full mt-6 bg-orange-700 text-white font-semibold py-3 rounded-md hover:bg-orange-600 transition">
             Create
