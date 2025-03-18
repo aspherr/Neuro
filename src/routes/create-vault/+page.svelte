@@ -3,6 +3,7 @@
     import { invoke } from '@tauri-apps/api/core';
     import { fade, slide } from "svelte/transition";
     import { open } from '@tauri-apps/plugin-dialog';
+    import { writeFile, mkdir, BaseDirectory } from '@tauri-apps/plugin-fs';
     import { goto } from "$app/navigation";
   
     let name = "";
@@ -26,16 +27,33 @@
         }
 
         } catch (err) {
-        console.error(err);
+            console.error(err);
+            alert(err);
         }
     }
   
-    function createVault() {
+    async function createVault() {
       if (!name || !path) {
         alert("Please enter a vault name and choose a location.");
         return;
       }
       console.log("Creating Vault:", { name, path });
+
+      try {
+        const vaultPath = `${path}/${name}`;
+        await mkdir(vaultPath, { recursive: true });
+
+        const fileContent = new TextEncoder().encode(`# Welcome to ${name}`);
+        await writeFile(`${vaultPath}/README.md`, fileContent);
+
+        alert("Vault created successfully");
+        goBack();
+
+      } catch (err) {
+        console.error(err);
+        alert(err);
+      }
+      
     }
   
     function goBack() {
