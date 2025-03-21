@@ -3,7 +3,7 @@
     import { invoke } from '@tauri-apps/api/core';
     import { fade, slide } from "svelte/transition";
     import { open } from '@tauri-apps/plugin-dialog';
-    import { writeFile, mkdir, BaseDirectory } from '@tauri-apps/plugin-fs';
+    import { writeFile, mkdir } from '@tauri-apps/plugin-fs';
     import { goto } from "$app/navigation";
   
     let name = "";
@@ -47,7 +47,7 @@
         await writeFile(`${vaultPath}/README.md`, fileContent);
 
         alert("Vault created successfully");
-        goBack();
+        goToVault();
 
       } catch (err) {
         console.error(err);
@@ -58,6 +58,10 @@
   
     function goBack() {
         goto("/");
+    }
+
+    function goToVault() {
+        goto("/vault");
     }
   </script>
   
