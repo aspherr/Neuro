@@ -14,13 +14,18 @@
     goto("/create-vault");
   }
 
-  const openFinder = async () => {
+  const openVault = async () => {
     try {
       const path = await open({
         directory: true,
         multiple: false
       });
       console.log(path);
+
+      if (path) {
+        const encodedPath = encodeURIComponent(path);
+        goto(`/vault/${encodedPath}`);
+      }
 
     } catch (err) {
       console.error(err);
@@ -60,7 +65,7 @@
               <p class="text-gray-400 text-sm">Choose an existing folder of Markdown files.</p>
           </div>
           <button class="w-24 h-10 bg-gray-700 text-white rounded-md hover:bg-gray-600 transition"
-          onclick={openFinder}>
+          onclick={openVault}>
               Open
           </button>
       </div>

@@ -47,7 +47,10 @@
         await writeFile(`${vaultPath}/README.md`, fileContent);
 
         alert("Vault created successfully");
-        goToVault();
+        if (vaultPath) {
+            const encodedPath = encodeURIComponent(vaultPath);
+            goto(`/vault/${encodedPath}`);
+        }
 
       } catch (err) {
         console.error(err);
@@ -58,10 +61,6 @@
   
     function goBack() {
         goto("/");
-    }
-
-    function goToVault() {
-        goto("/vault");
     }
   </script>
   
