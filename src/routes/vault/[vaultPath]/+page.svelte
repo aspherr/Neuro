@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from 'svelte';
-    import { Window, LogicalSize, LogicalPosition, currentMonitor} from '@tauri-apps/api/window';
+    import { Window, LogicalSize } from '@tauri-apps/api/window';
 
     const win = Window.getCurrent();
 
