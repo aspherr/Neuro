@@ -2,8 +2,11 @@
     import { onMount } from 'svelte';
     import { Window, LogicalSize } from '@tauri-apps/api/window';
     import { readDir } from '@tauri-apps/plugin-fs';
+    import { writeFile, mkdir } from '@tauri-apps/plugin-fs';
 
     const win = Window.getCurrent();
+    let showModal = false;
+    let notebookName = '';
 
     export let data: {
         vaultPath: string;
@@ -18,6 +21,16 @@
     };
 
     let notebooks: NotebookEntry[] = [];
+
+    async function createNotebook() {
+      if (!notebookName.trim()) {
+        alert("Please enter a notebook name.");
+        return;
+      }
+
+      showModal = false;
+      notebookName = '';
+    }
 
     onMount(async() => {
         await win.setSize(new LogicalSize(1400, 1000));
@@ -40,8 +53,42 @@
     <!-- Main content -->
     <div class="flex-1 p-6 overflow-auto">
       {#if notebooks.length === 0}
-        <div class="text-center mt-12 text-gray-400">
+        <div class="pt-2 text-gray-400">
           <p class="mb-4">You haven't created any notebooks yet.</p>
+            <button class="rounded-md px-6 py-2 bg-zinc-600 text-white font-semibold 
+                          hover:bg-zinc-700 border border-transparent hover:border-orange-600 transition antialiased"
+            on:click={() => showModal = true}>
+              Create Notebook
+            </button>
+
+            {#if showModal}
+              <div class="fixed inset-0 backdrop-blur-md flex items-center justify-center z-50">
+                <div class="bg-zinc-800 text-white p-6 rounded-lg w-full max-w-md shadow-lg">
+                  <h2 class="text-xl font-bold mb-4">Create a New Notebook</h2>
+
+                  <input
+                    type="text"
+                    bind:value={notebookName}
+                    placeholder="Notebook name"
+                    class="w-full p-3 rounded-md bg-zinc-700 text-white focus:outline-none focus:ring-2 focus:ring-orange-600"
+                  />
+
+                  <div class="flex justify-end gap-2 mt-6">
+                    <button class="px-4 py-2 bg-zinc-600 rounded-md hover:bg-zinc-700 transition"
+                      on:click={() => showModal = false}>
+                      Cancel
+                    </button>
+
+                    <button
+                      class="px-4 py-2 bg-orange-700 rounded-md hover:bg-orange-600 transition"
+                      on:click={createNotebook}>
+                      Create
+                    </button>
+                  </div>
+                </div>
+              </div>
+            {/if}
+
         </div>
       
       {:else}
