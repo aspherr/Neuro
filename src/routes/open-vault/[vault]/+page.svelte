@@ -32,6 +32,7 @@
         const notebookPath = `${decodedPath}/${notebookName}`;
         await mkdir(notebookPath, { recursive: true });
         alert("Notebook created successfully");
+        
 
       } catch (err) {
         console.error(err);
@@ -42,14 +43,20 @@
       notebookName = '';
     }
 
+    async function loadNotebooks() {
+      const result = await readDir(decodedPath);
+      notebooks = (result as unknown as NotebookEntry[])
+      .filter(entry => entry.name && !entry.name.startsWith('.'))
+      .map(entry => ({
+            path: entry.path,
+            name: entry.name,
+            isDir: entry.isDir,
+        }));
+    }
+
     onMount(async() => {
         await win.setSize(new LogicalSize(1400, 1000));
-        const result = await readDir(decodedPath);
-        notebooks = (result as unknown as NotebookEntry[]).filter(entry =>
-          entry.isDir && 
-          entry.name && 
-          !entry.name.startsWith('.')
-        );
+        await loadNotebooks();
     });
 
 </script>
@@ -102,11 +109,10 @@
         </div>
       
       {:else}
-        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <div class="grid grid-cols-2 md:grid-cols-6 gap-4">
           {#each notebooks as notebook (notebook.name)}
-            <div class="p-4 bg-zinc-800 rounded-md hover:bg-zinc-700 transition cursor-pointer">
+            <div class="p-4 py-6 min-h-[200px] bg-zinc-800 hover:bg-zinc-700 transition cursor-pointer border-l-5 border-orange-600 rounded">
               <h2 class="font-bold text-lg">{notebook.name}</h2>
-              <p class="text-sm text-gray-400">Click to open</p>
             </div>
           {/each}
         </div>
