@@ -2,7 +2,8 @@
     import { onMount } from 'svelte';
     import { Window, LogicalSize } from '@tauri-apps/api/window';
     import { readDir } from '@tauri-apps/plugin-fs';
-    import { writeFile, mkdir } from '@tauri-apps/plugin-fs';
+    import { mkdir } from '@tauri-apps/plugin-fs';
+    import { goto } from "$app/navigation";
 
     const win = Window.getCurrent();
     let showModal = false;
@@ -52,6 +53,11 @@
             name: entry.name,
             isDir: entry.isDir,
         }));
+    }
+
+    async function goBack() {
+        await win.setSize(new LogicalSize(800, 600));
+        goto("/");
     }
 
     onMount(async() => {
@@ -120,7 +126,15 @@
     </div>
   
     <!-- Footer with vault path -->
-    <div class="px-6 py-4 border-t border-zinc-800 text-gray-500 text-sm">
+    <div class="flex items-center gap-2 px-6 py-4 border-t border-zinc-800 text-gray-500 text-sm">
+      <button aria-label='back-button' class="text-gray-400 hover:text-white text-base flex items-center pb-0.5"
+      on:click={goBack}>
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      </svg>
+    </button>
+  
+    <span>
       Vault location: <span class="text-gray-300">{decodedPath}</span>
-    </div>
+    </span>
   </main>
