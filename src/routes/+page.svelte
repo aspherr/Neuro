@@ -24,7 +24,7 @@
 
       if (path) {
         const encodedPath = encodeURIComponent(path);
-        goto(`/vault/${encodedPath}`);
+        goto(`/open-vault/${encodedPath}`);
       }
 
     } catch (err) {

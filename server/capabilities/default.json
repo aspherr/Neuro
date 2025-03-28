@@ -14,6 +14,7 @@
     "fs:allow-document-write",
     "fs:allow-document-write-recursive",
     "fs:write-all",
+    "fs:scope",
     "core:window:default",
     "core:window:allow-set-size",
     "core:window:allow-center"

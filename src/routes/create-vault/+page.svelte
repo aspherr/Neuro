@@ -49,7 +49,7 @@
         alert("Vault created successfully");
         if (vaultPath) {
             const encodedPath = encodeURIComponent(vaultPath);
-            goto(`/vault/${encodedPath}`);
+            goto(`/open-vault/${encodedPath}`);
         }
 
       } catch (err) {
