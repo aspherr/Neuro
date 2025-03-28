@@ -28,6 +28,16 @@
         return;
       }
 
+      try {
+        const notebookPath = `${decodedPath}/${notebookName}`;
+        await mkdir(notebookPath, { recursive: true });
+        alert("Notebook created successfully");
+
+      } catch (err) {
+        console.error(err);
+        alert(err);
+      }
+
       showModal = false;
       notebookName = '';
     }
