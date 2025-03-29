@@ -42,11 +42,8 @@
       try {
         const vaultPath = `${path}/${name}`;
         await mkdir(vaultPath, { recursive: true });
-
-        const fileContent = new TextEncoder().encode(`# Welcome to ${name}`);
-        await writeFile(`${vaultPath}/README.md`, fileContent);
-
         alert("Vault created successfully");
+        
         if (vaultPath) {
             const encodedPath = encodeURIComponent(vaultPath);
             goto(`/open-vault/${encodedPath}`);
