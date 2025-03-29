@@ -33,8 +33,9 @@
         const notebookPath = `${decodedPath}/${notebookName}`;
         await mkdir(notebookPath, { recursive: true });
         alert("Notebook created successfully");
-        
 
+        await loadNotebooks();
+        
       } catch (err) {
         console.error(err);
         alert(err);
