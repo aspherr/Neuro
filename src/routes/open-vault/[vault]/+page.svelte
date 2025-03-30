@@ -61,6 +61,15 @@
         goto("/");
     }
 
+    function openNotebook(notebook: string | undefined) {
+      if (!notebook) {
+        return;
+      };
+      
+      let vault = decodedPath.split('/').filter(Boolean).pop() || '';
+      goto(`${vault.trim()}/${notebook}`);
+    }
+
     onMount(async() => {
         await win.setSize(new LogicalSize(1400, 1000));
         await loadNotebooks();
@@ -129,9 +138,10 @@
       {:else}
       <div class="grid grid-cols-2 md:grid-cols-6 gap-4">
         {#each notebooks as notebook (notebook.name)}
-        <div class="p-4 py-6 min-h-[200px] bg-zinc-800 hover:bg-zinc-700 transition cursor-pointer border-l-5 border-orange-600 rounded">
+        <button class="p-4 py-6 min-h-[200px] bg-zinc-800 hover:bg-zinc-700 transition cursor-pointer border-l-5 border-orange-600 rounded"
+        on:click={() => openNotebook(notebook.name)}>
           <h2 class="font-bold text-lg">{notebook.name}</h2>
-        </div>
+        </button>
         {/each}
       </div>
       {/if}
