@@ -58,6 +58,7 @@
 
     async function goBack() {
         await win.setSize(new LogicalSize(800, 600));
+        await win.center();
         goto("/");
     }
 
@@ -72,6 +73,7 @@
 
     onMount(async() => {
         await win.setSize(new LogicalSize(1400, 1000));
+        await win.center();
         await loadNotebooks();
     });
 
