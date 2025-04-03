@@ -37,11 +37,13 @@
 </script>
 
 <main class="h-screen w-screen bg-zinc-900 text-white flex flex-col">
-    <div class="h-screen w-65 absolute bg-zinc-800 transistion duration-400 ease-in-out z-0"
+    <div class="h-screen w-65 flex-1 absolute bg-zinc-800 transistion duration-400 ease-in-out z-0"
         class:w-0={!toggle} 
         class:w-65={toggle}>
 
-        <div class="group bg-zinc-800 w-9 h-9 p-1 mt-7 ml-7 rounded hover:bg-zinc-700 transistion-colors duration-200 antialiased z-1">
+        <div class="group flex items-center justify-center bg-zinc-800 w-9 h-9 p-1 mt-7 ml-7 rounded hover:bg-zinc-700 transition-colors duration-200 antialiased z-10"
+            class:border={toggle}
+            class:border-gray-500={toggle}>
             <button class="text-white" aria-label="toggle-button" on:click={() => toggle = !toggle}>
                 <svg
                   class="w-7 h-7 group-hover:text-orange-500 transistion-colors duration-200"
@@ -77,7 +79,7 @@
                     {#if toggleTree}
                     <ul class="pt-1">
                         {#each notes as note (note.name)}
-                            <button class="w-full p-0.5 pl-10 flex items-center space-x-2 hover:bg-zinc-700 transistion-colors duration-200 antialiased" on:click={alert("test")}>
+                            <button class="w-full p-0.5 pl-10 flex items-center space-x-2 hover:bg-zinc-700 transistion-colors duration-200 antialiased">
                                 <svg
                                 class="w-4 h-4 text-gray-500"
                                 fill="none"
@@ -99,6 +101,11 @@
                 </li>
             </ul>
             {/if}
-        </div>    
+        </div>
+        
+        <div class="absolute bottom-0 w-full border-t border-zinc-700 pb-10 text-xs text-zinc-400">
+
+        </div>
+
     </div>
 </main>
