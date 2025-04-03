@@ -20,7 +20,6 @@
         children?: NotebookEntry[];
         isDir: boolean;
     };
-
     let notebooks: NotebookEntry[] = [];
 
     async function createNotebook() {
@@ -67,8 +66,8 @@
         return;
       };
       
-      let vault = decodedPath.split('/').filter(Boolean).pop() || '';
-      goto(`${vault.trim()}/${notebook}`);
+      const encodedPath = encodeURIComponent(decodedPath);
+      goto(`${encodedPath}/${notebook}`);
     }
 
     onMount(async() => {

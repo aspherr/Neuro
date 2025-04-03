@@ -1,11 +1,12 @@
 import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ params }) => {
-  const vaultPath = params.notebook;
+  const path = params.vault;
+  const name = params.notebook;
 
-  if (!vaultPath) {
-    throw new Error("Vault name is required");
+  if (!name || !path) {
+    throw new Error("Invalid Routing");
   }
-  return { vaultPath };
+  return { name, path };
 };
     

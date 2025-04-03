@@ -1,17 +1,37 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import { fly } from 'svelte/transition';
-    import { goto } from "$app/navigation";
+    import { readDir } from '@tauri-apps/plugin-fs';
 
     let toggle = true;
+    let toggleTree = true;
 
     export let data: {
-        vaultPath: string;
+        path: string;
+        name: string;
     };
-    const notebookName = data.vaultPath.split('/').filter(Boolean).pop() || '';
+    const notebookPath = data.path;
+    const notebookName = data.name;
+
+    type NoteEntry = {
+        path: string;
+        name?: string;
+        children?: NoteEntry[];
+    };
+    let notes: NoteEntry[] = [];
+
+    async function loadNotes() {
+        const result = await readDir(`${notebookPath}/${notebookName}`);
+        notes = (result as unknown as NoteEntry[])
+        .filter(entry => entry.name)
+        .map(entry => ({
+            path: entry.path,
+            name: entry.name
+        }));
+    }
 
     onMount(async() => {
-
+        loadNotes();
     });
 
 </script>
@@ -37,11 +57,47 @@
               </button>
         </div>
 
-        <div class="">
+        <div>
             {#if toggle}
-            <h1 class="absolute font-semibold pl-8 pt-8 antialiased z-1" class:whitespace-wrap={!toggle} transition:fly={{ x: -100 }}>
-                {notebookName}
-            </h1>
+            <ul class="absolute w-full font-base pt-8 antialiased z-1" class:whitespace-wrap={!toggle} transition:fly={{ x: -100 }}>
+                <li class="w-full block">
+                    <button class="group flex items-center w-full font-semibold hover:bg-zinc-700 px-4 py-1 transition-colors duration-200 antialiased"
+                    on:click={() => toggleTree = !toggleTree}>
+                        <svg 
+                            class="w-5 h-5 group-hover:text-orange-600 transform transition-transform duration-200 ease-in-out"
+                            class:rotate-90={toggleTree}
+                            fill="none" 
+                            stroke="currentColor" 
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                        <span class="ml-3">{notebookName}</span>
+                    </button>
+
+                    {#if toggleTree}
+                    <ul class="pt-1">
+                        {#each notes as note (note.name)}
+                            <button class="w-full p-0.5 pl-10 flex items-center space-x-2 hover:bg-zinc-700 transistion-colors duration-200 antialiased" on:click={alert("test")}>
+                                <svg
+                                class="w-4 h-4 text-gray-500"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="1"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                >
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                                </svg>
+                                <span class="">{note.name}</span>
+                            </button>
+                        {/each}
+                    </ul>
+                    {/if}
+                </li>
+            </ul>
             {/if}
         </div>    
     </div>
