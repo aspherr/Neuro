@@ -4,6 +4,7 @@
     import { readDir } from '@tauri-apps/plugin-fs';
     import { marked } from 'marked';
     import { invoke } from '@tauri-apps/api/core';
+  import { goto } from '$app/navigation';
 
     let toggle = true;
     let toggleTree = true;
@@ -42,6 +43,10 @@
         markdown = out;
         content = marked(markdown);
         toggleNote = !toggleNote;
+    }
+
+    function goBack() {
+        goto('./');
     }
 
     onMount(async() => {
@@ -119,6 +124,20 @@
         </div>
         
         <div class="absolute bottom-0 w-full border-t border-zinc-700 pb-18 text-xs text-zinc-400"></div>
+
+        <button class="group flex items-center justify-center bg-zinc-800 w-9 h-9 p-1 mt-190 ml-7 rounded hover:bg-zinc-700 transition-colors duration-200 antialiased z-10"
+        class:border={toggle}
+        class:border-gray-500={toggle}
+        on:click={goBack}
+        aria-label="back-button">
+            <svg 
+            class="w-5 h-5 group-hover:text-orange-600 transform transition-transform duration-200 ease-in-out"
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5l-7 7 7 7" />
+            </svg>
+        </button>
 
     </div>
 
