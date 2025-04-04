@@ -1,5 +1,6 @@
 <script lang="ts">
     import { onMount } from 'svelte';
+    import { invoke } from '@tauri-apps/api/core';
     import { fly } from 'svelte/transition';
     import { readDir } from '@tauri-apps/plugin-fs';
 
@@ -32,6 +33,9 @@
 
     onMount(async() => {
         loadNotes();
+        let path = `${notebookPath}/${notebookName}/test.md`;
+        let markdownContent = await invoke<string>('read_file', { path });
+        alert(markdownContent);
     });
 
 </script>

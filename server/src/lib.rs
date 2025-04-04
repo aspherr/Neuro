@@ -1,5 +1,6 @@
 use log::info;
 use simple_logger;
+mod files;
 
 #[tauri::command]
 fn get_app_version(app: tauri::AppHandle) -> String {
@@ -19,7 +20,11 @@ pub fn run() {
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_dialog::init())
-        .invoke_handler(tauri::generate_handler![get_app_version, logger])
+        .invoke_handler(tauri::generate_handler![
+            get_app_version, 
+            logger, 
+            files::read_file
+            ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
