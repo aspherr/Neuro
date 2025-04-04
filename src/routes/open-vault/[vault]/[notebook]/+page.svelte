@@ -1,8 +1,8 @@
 <script lang="ts">
     import { onMount } from 'svelte';
-    import { invoke } from '@tauri-apps/api/core';
     import { fly } from 'svelte/transition';
     import { readDir } from '@tauri-apps/plugin-fs';
+    import { goto } from '$app/navigation';
 
     let toggle = true;
     let toggleTree = true;
@@ -10,6 +10,7 @@
     export let data: {
         path: string;
         name: string;
+        note: string;
     };
     const notebookPath = data.path;
     const notebookName = data.name;
@@ -31,11 +32,17 @@
         }));
     }
 
+    function openNote(file: string | undefined) {
+      if (!file) {
+        return;
+      };
+      
+      const encodedPath = encodeURIComponent(notebookPath);
+      goto(`${encodedPath}/${file}`);
+    }
+
     onMount(async() => {
         loadNotes();
-        let path = `${notebookPath}/${notebookName}/test.md`;
-        let markdownContent = await invoke<string>('read_file', { path });
-        alert(markdownContent);
     });
 
 </script>
@@ -83,7 +90,8 @@
                     {#if toggleTree}
                     <ul class="pt-1">
                         {#each notes as note (note.name)}
-                            <button class="w-full p-0.5 pl-10 flex items-center space-x-2 hover:bg-zinc-700 transistion-colors duration-200 antialiased">
+                            <button class="w-full p-0.5 pl-10 flex items-center space-x-2 hover:bg-zinc-700 transistion-colors duration-200 antialiased"
+                            on:click={() => openNote(note.name)}>
                                 <svg
                                 class="w-4 h-4 text-gray-500"
                                 fill="none"
@@ -107,9 +115,11 @@
             {/if}
         </div>
         
-        <div class="absolute bottom-0 w-full border-t border-zinc-700 pb-10 text-xs text-zinc-400">
+        <div class="absolute bottom-0 w-full border-t border-zinc-700 pb-10 text-xs text-zinc-400"></div>
 
-        </div>
+    </div>
 
+    <div class="mt-10 ml-70">
+        <slot/>
     </div>
 </main>
