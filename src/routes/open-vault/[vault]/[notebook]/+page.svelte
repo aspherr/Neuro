@@ -2,10 +2,14 @@
     import { onMount } from 'svelte';
     import { fly } from 'svelte/transition';
     import { readDir } from '@tauri-apps/plugin-fs';
-    import { goto } from '$app/navigation';
+    import { marked } from 'marked';
+    import { invoke } from '@tauri-apps/api/core';
 
     let toggle = true;
     let toggleTree = true;
+    let toggleNote = true;
+    let markdown = '';
+    let content: string | Promise<string> | null = null;
 
     export let data: {
         path: string;
@@ -32,13 +36,12 @@
         }));
     }
 
-    function openNote(file: string | undefined) {
-      if (!file) {
-        return;
-      };
-      
-      const encodedPath = encodeURIComponent(notebookPath);
-      goto(`${encodedPath}/${file}`);
+    async function openNote(file: string | undefined) {
+        let filePath = `${notebookPath}/${notebookName}/${file}`;
+        const out = await invoke<string>('read_file', { path: filePath });
+        markdown = out;
+        content = marked(markdown);
+        toggleNote = !toggleNote;
     }
 
     onMount(async() => {
@@ -115,11 +118,15 @@
             {/if}
         </div>
         
-        <div class="absolute bottom-0 w-full border-t border-zinc-700 pb-10 text-xs text-zinc-400"></div>
+        <div class="absolute bottom-0 w-full border-t border-zinc-700 pb-18 text-xs text-zinc-400"></div>
 
     </div>
 
-    <div class="mt-10 ml-70">
-        <slot/>
+    <div class="prose prose-invert mt-10 ransition-all duration-400 ease-in-out" 
+    class:ml-30={!toggle}
+    class:ml-70={toggle}
+    class:display-none={!toggleNote}>
+        {@html content}
     </div>
+    
 </main>
