@@ -10,8 +10,10 @@
     let toggleTree = true;
     let toggleNote = true;
     let toggleMarkdown = true;
-    let markdown: string = ''; // RAW markdown
+    let currentNote: string = '';
+    let markdown: string = '';
     $: content = marked(markdown);
+    
 
     export let data: {
         path: string;
@@ -40,10 +42,15 @@
 
     async function openNote(file: string | undefined) {
         let filePath = `${notebookPath}/${notebookName}/${file}`;
+        currentNote = filePath;
         const out = await invoke<string>('read_file', { path: filePath });
         markdown = out;
         content = marked(markdown);
         toggleNote = !toggleNote;
+    }
+
+    async function saveNote(content: string | undefined) {
+        await invoke<string>('save_file', { path: currentNote, data: content});
     }
 
     function goBack() {
@@ -186,7 +193,7 @@
             </div>
 
             <div class="group flex items-center justify-center bg-zinc-800 border border-gray-500 w-9 h-9 p-1 rounded hover:bg-zinc-700 transition-all duration-400 ease-in-out transform antialiased z-10">
-                <button class="text-gray-400" aria-label="save-button">
+                <button class="text-gray-400" aria-label="save-button" on:click={() => {saveNote(markdown)}}>
                     <svg xmlns="http://www.w3.org/2000/svg"
                     class="group-hover:text-orange-600 transform transition-transform duration-200 ease-in-out"
                     viewBox="0 0 24 24" 
