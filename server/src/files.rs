@@ -10,3 +10,8 @@ pub fn read_file(path: &str) -> Result<String, String> {
 pub fn save_file(path: &str, data: &str) -> Result<(), String> {
     fs::write(path, data).map_err(|e| e.to_string())
 }
+
+#[command]
+pub fn delete_file(path: &str) -> Result<(), String> {
+    fs::remove_file(path).map_err(|e| e.to_string())
+}

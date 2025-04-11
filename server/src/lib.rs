@@ -24,7 +24,8 @@ pub fn run() {
             get_app_version, 
             logger, 
             files::read_file,
-            files::save_file
+            files::save_file,
+            files::delete_file
             ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

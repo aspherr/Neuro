@@ -5,6 +5,7 @@
     import { marked } from 'marked';
     import { invoke } from '@tauri-apps/api/core';
     import { goto } from '$app/navigation';
+    import { ask } from '@tauri-apps/plugin-dialog';
 
     let toggle = true;
     let toggleTree = true;
@@ -51,6 +52,18 @@
 
     async function saveNote(content: string | undefined) {
         await invoke<string>('save_file', { path: currentNote, data: content});
+    }
+
+    async function deleteNote() {
+        const confirmDelete = await ask('This action cannot be reverted. Are you sure?', {
+        title: 'Delete Note',
+        kind: 'warning',
+        });
+
+        if (confirmDelete) {
+            await invoke<string>('delete_file', { path: currentNote }); 
+        }
+        loadNotes()
     }
 
     function goBack() {
@@ -104,7 +117,7 @@
             </div>
 
             <div class="group flex items-center justify-center bg-zinc-800 border border-gray-500 w-9 h-9 p-1 rounded hover:bg-zinc-700 transition-all duration-400 ease-in-out transform antialiased z-10">
-                <button class="text-gray-400" aria-label="delete-button">
+                <button class="text-gray-400" aria-label="delete-button" on:click={deleteNote}>
                     <svg xmlns="http://www.w3.org/2000/svg"
                     class="group-hover:text-orange-500 transistion-colors duration-200"
                     viewBox="0 0 24 24" 
