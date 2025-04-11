@@ -174,6 +174,7 @@
                             on:click={() => openNote(note.name)}>
                                 <svg
                                 class="w-4 h-4 text-gray-500"
+                                class:text-orange-600={note.name == currentNote.split("/").pop()}
                                 fill="none"
                                 stroke="currentColor"
                                 stroke-width="1"
