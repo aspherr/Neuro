@@ -60,10 +60,16 @@
         class:w-0={!toggle} 
         class:w-65={toggle}>
 
-        <div class="group flex items-center justify-center bg-zinc-800 w-9 h-9 p-1 mt-7 ml-7 rounded hover:bg-zinc-700 transition-colors duration-200 antialiased z-10"
+        <div class="flex items-start mx-7 my-7 transition-all duration-400 ease-in-out" 
+        class:flex-row={toggle}
+        class:flex-col={!toggle}
+        class:space-x-11={toggle}
+        class:space-y-5={!toggle}>
+
+            <div class="group flex items-center justify-center bg-zinc-800 w-9 h-9 p-1 rounded hover:bg-zinc-700 transition-all duration-400 ease-in-out transform antialiased z-10"
             class:border={toggle}
             class:border-gray-500={toggle}>
-            <button class="text-white" aria-label="toggle-button" on:click={() => toggle = !toggle}>
+            <button class="text-gray-400" aria-label="toggle-button" on:click={() => toggle = !toggle}>
                 <svg
                   class="w-7 h-7 group-hover:text-orange-500 transistion-colors duration-200"
                   fill="none"
@@ -71,16 +77,53 @@
                   stroke-width="2"
                   stroke-linecap="round"
                   xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M4 6h16M4 12h16M4 18h16"/>
+                  viewBox="0 0 24 24">
+                    <path d="M4 6h16M4 12h16M4 18h16"/>
                 </svg>
               </button>
+            </div>
+
+            <div class="group flex items-center justify-center bg-zinc-800 w-9 h-9 p-1 rounded hover:bg-zinc-700 transition-all duration-400 ease-in-out transform antialiased z-10"
+            class:border={toggle}
+            class:border-gray-500={toggle}>
+                <button class="text-gray-400" aria-label="create-button">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                    class="group-hover:text-orange-500 transistion-colors duration-200"
+                    width="24" height="24"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                    </svg>
+                </button>
+            </div>
+
+            <div class="group flex items-center justify-center bg-zinc-800 w-9 h-9 p-1 rounded hover:bg-zinc-700 transition-all duration-400 ease-in-out transform antialiased z-10"
+            class:border={toggle}
+            class:border-gray-500={toggle}>
+                <button class="text-gray-400" aria-label="delete-button">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                    class="group-hover:text-orange-500 transistion-colors duration-200"
+                    viewBox="0 0 24 24" 
+                    width="24" height="24" 
+                    fill="none" stroke="currentColor" 
+                    stroke-width="1.5" 
+                    stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 6h18" />
+                        <path d="M8 6V4h8v2" />
+                        <path d="M19 6l-1 14H6L5 6" />
+                        <line x1="10" y1="11" x2="10" y2="17" />
+                        <line x1="14" y1="11" x2="14" y2="17" />
+                    </svg>  
+                </button>
+            </div>
+
         </div>
 
         <div>
             {#if toggle}
-            <ul class="absolute w-full font-base pt-8 antialiased z-1" class:whitespace-wrap={!toggle} transition:fly={{ x: -100 }}>
+            <ul class="absolute w-full font-base antialiased z-1" class:whitespace-wrap={!toggle} transition:fly={{ x: -100 }}>
                 <li class="w-full block">
                     <button class="group flex items-center w-full font-semibold hover:bg-zinc-700 px-4 py-1 transition-colors duration-200 antialiased"
                     on:click={() => toggleTree = !toggleTree}>
@@ -125,18 +168,70 @@
         
         <div class="absolute bottom-0 w-full border-t border-zinc-700 pb-18 text-xs text-zinc-400"></div>
 
-        <div class="group flex items-center justify-center bg-zinc-800 w-9 h-9 p-1 mt-213.5 ml-7 rounded hover:bg-zinc-700 transition-colors duration-200 antialiased z-10"
-        class:border={toggle}
-        class:border-gray-500={toggle}>
-            <button class="text-white" aria-label="toggle-button" on:click={goBack}>
-                <svg 
-                class="w-5 h-5 group-hover:text-orange-600 transform transition-transform duration-200 ease-in-out"
-                fill="none" 
-                stroke="currentColor" 
-                viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5l-7 7 7 7" />
-                </svg>
-            </button>
+        <div class="flex items-start mx-7 transition-all duration-400 ease-in-out transform"
+            class:my-[855px]={toggle}
+            class:my-[625px]={!toggle}
+            class:flex-row={toggle}
+            class:flex-col-reverse={!toggle}
+            class:space-x-11={toggle}
+            class:space-y-5={!toggle}
+            class:space-y-reverse={!toggle}>
+            
+            <div class="group flex items-center justify-center bg-zinc-800 w-9 h-9 p-1 rounded hover:bg-zinc-700 transition-all duration-400 ease-in-out transform antialiased z-10"
+            class:border={toggle}
+            class:border-gray-500={toggle}>
+                <button class="text-gray-400" aria-label="toggle-button" on:click={goBack}>
+                    <svg 
+                    class="w-5 h-5 group-hover:text-orange-600 transform transition-transform duration-200 ease-in-out"
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5l-7 7 7 7" />
+                    </svg>
+                </button>
+            </div>
+
+            <div class="group flex items-center justify-center bg-zinc-800 w-9 h-9 p-1 rounded hover:bg-zinc-700 transition-all duration-400 ease-in-out transform antialiased z-10"
+            class:border={toggle}
+            class:border-gray-500={toggle}>
+                <button class="text-gray-400" aria-label="save-button">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                    class="group-hover:text-orange-600 transform transition-transform duration-200 ease-in-out"
+                    viewBox="0 0 24 24" 
+                    width="20" height="20" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    stroke-width="1.5" 
+                    stroke-linecap="round" 
+                    stroke-linejoin="round">
+                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+                        <polyline points="17 21 17 13 7 13 7 21" />
+                        <polyline points="7 3 7 8 15 8" />
+                      </svg>                      
+                </button>
+            </div>
+
+            <div class="group flex items-center justify-center bg-zinc-800 w-9 h-9 p-1 rounded hover:bg-zinc-700 transition-all duration-400 ease-in-out transform antialiased z-10"
+            class:border={toggle}
+            class:border-gray-500={toggle}>
+                <button class="text-gray-400" aria-label="toggle-button">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                    class="group-hover:text-orange-600 transform transition-transform duration-200 ease-in-out"
+                    viewBox="0 0 24 24" 
+                    width="22" height="22" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    stroke-width="1.5" 
+                    stroke-linecap="round" 
+                    stroke-linejoin="round">
+                        <rect x="4" y="8" width="16" height="12" rx="2" ry="2" />
+                        <circle cx="9" cy="14" r="1" />
+                        <circle cx="15" cy="14" r="1" />
+                        <line x1="12" y1="4" x2="12" y2="8" />
+                        <circle cx="12" cy="4" r="1" />
+                      </svg>
+                </button>
+            </div>
         </div>
         
     </div>
@@ -148,4 +243,18 @@
         {@html content}
     </div>
     
-</main>
+</main>  
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Robot head -->
+    <rect x="4" y="8" width="16" height="12" rx="2" ry="2" />
+    
+    <!-- Eyes -->
+    <circle cx="9" cy="14" r="1" />
+    <circle cx="15" cy="14" r="1" />
+    
+    <!-- Antenna -->
+    <line x1="12" y1="4" x2="12" y2="8" />
+    <circle cx="12" cy="4" r="1" />
+  </svg>
+  
