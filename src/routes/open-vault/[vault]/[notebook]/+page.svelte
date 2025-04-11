@@ -125,20 +125,20 @@
         
         <div class="absolute bottom-0 w-full border-t border-zinc-700 pb-18 text-xs text-zinc-400"></div>
 
-        <button class="group flex items-center justify-center bg-zinc-800 w-9 h-9 p-1 mt-213.5 ml-7 rounded hover:bg-zinc-700 transition-colors duration-200 antialiased z-10"
+        <div class="group flex items-center justify-center bg-zinc-800 w-9 h-9 p-1 mt-213.5 ml-7 rounded hover:bg-zinc-700 transition-colors duration-200 antialiased z-10"
         class:border={toggle}
-        class:border-gray-500={toggle}
-        on:click={goBack}
-        aria-label="back-button">
-            <svg 
-            class="w-5 h-5 group-hover:text-orange-600 transform transition-transform duration-200 ease-in-out"
-            fill="none" 
-            stroke="currentColor" 
-            viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5l-7 7 7 7" />
-            </svg>
-        </button>
-
+        class:border-gray-500={toggle}>
+            <button class="text-white" aria-label="toggle-button" on:click={goBack}>
+                <svg 
+                class="w-5 h-5 group-hover:text-orange-600 transform transition-transform duration-200 ease-in-out"
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5l-7 7 7 7" />
+                </svg>
+            </button>
+        </div>
+        
     </div>
 
     <div class="prose prose-invert mt-10 ransition-all duration-400 ease-in-out" 
