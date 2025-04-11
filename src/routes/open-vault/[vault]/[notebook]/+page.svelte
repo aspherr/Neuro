@@ -10,7 +10,7 @@
     let toggle = true;
     let toggleTree = true;
     let toggleNote = true;
-    let toggleMarkdown = true;
+    let toggleMarkdown = false;
     let toggleCreateModal = false;
     let currentNote: string = '';
     let newFileName: string = '';
@@ -69,7 +69,7 @@
     }
 
     async function createNote(file: string | undefined) {
-        let filePath = `${notebookPath}/${notebookName}/${file}`;
+        let filePath = `${notebookPath}/${notebookName}/${file}.md`;
         await invoke<string>('create_file', { path: filePath });
         
         toggleCreateModal = false;
@@ -296,12 +296,17 @@
       <div class="bg-zinc-800 text-white p-6 rounded-lg w-full max-w-md shadow-lg">
         <h2 class="text-xl font-bold mb-4">Create a New Note</h2>
 
-        <input
-          type="text"
-          bind:value={newFileName}
-          placeholder="Note name"
-          class="w-full p-3 rounded-md bg-zinc-700 text-white focus:outline-none focus:ring-2 focus:ring-orange-600"
-        />
+        <div class="relative">
+            <input
+            type="text"
+            bind:value={newFileName}
+            placeholder="Note name"
+            class="w-full p-3 rounded-md bg-zinc-700 text-white focus:outline-none focus:ring-2 focus:ring-orange-600"
+            />
+            <span class="absolute right-0 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none bg-zinc-900 p-3 rounded-r">
+                .md
+            </span>
+        </div>
 
         <div class="flex justify-end gap-2 mt-6">
           <button class="px-4 py-2 bg-zinc-600 rounded-md hover:bg-zinc-700 transition"
