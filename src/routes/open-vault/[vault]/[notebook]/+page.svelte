@@ -9,8 +9,9 @@
     let toggle = true;
     let toggleTree = true;
     let toggleNote = true;
-    let markdown = '';
-    let content: string | Promise<string> | null = null;
+    let toggleMarkdown = true;
+    let markdown: string = ''; // RAW markdown
+    $: content = marked(markdown);
 
     export let data: {
         path: string;
@@ -66,9 +67,7 @@
         class:space-x-11={toggle}
         class:space-y-5={!toggle}>
 
-            <div class="group flex items-center justify-center bg-zinc-800 w-9 h-9 p-1 rounded hover:bg-zinc-700 transition-all duration-400 ease-in-out transform antialiased z-10"
-            class:border={toggle}
-            class:border-gray-500={toggle}>
+            <div class="group flex items-center justify-center bg-zinc-800 border border-gray-500 w-9 h-9 p-1 rounded hover:bg-zinc-700 transition-all duration-400 ease-in-out transform antialiased z-10">
             <button class="text-gray-400" aria-label="toggle-button" on:click={() => toggle = !toggle}>
                 <svg
                   class="w-7 h-7 group-hover:text-orange-500 transistion-colors duration-200"
@@ -83,9 +82,7 @@
               </button>
             </div>
 
-            <div class="group flex items-center justify-center bg-zinc-800 w-9 h-9 p-1 rounded hover:bg-zinc-700 transition-all duration-400 ease-in-out transform antialiased z-10"
-            class:border={toggle}
-            class:border-gray-500={toggle}>
+            <div class="group flex items-center justify-center bg-zinc-800 border border-gray-500 w-9 h-9 p-1 rounded hover:bg-zinc-700 transition-all duration-400 ease-in-out transform antialiased z-10">
                 <button class="text-gray-400" aria-label="create-button">
                     <svg xmlns="http://www.w3.org/2000/svg"
                     class="group-hover:text-orange-500 transistion-colors duration-200"
@@ -99,9 +96,7 @@
                 </button>
             </div>
 
-            <div class="group flex items-center justify-center bg-zinc-800 w-9 h-9 p-1 rounded hover:bg-zinc-700 transition-all duration-400 ease-in-out transform antialiased z-10"
-            class:border={toggle}
-            class:border-gray-500={toggle}>
+            <div class="group flex items-center justify-center bg-zinc-800 border border-gray-500 w-9 h-9 p-1 rounded hover:bg-zinc-700 transition-all duration-400 ease-in-out transform antialiased z-10">
                 <button class="text-gray-400" aria-label="delete-button">
                     <svg xmlns="http://www.w3.org/2000/svg"
                     class="group-hover:text-orange-500 transistion-colors duration-200"
@@ -118,7 +113,6 @@
                     </svg>  
                 </button>
             </div>
-
         </div>
 
         <div>
@@ -179,9 +173,7 @@
             class:space-y-5={!toggle}
             class:space-y-reverse={!toggle}>
             
-            <div class="group flex items-center justify-center bg-zinc-800 w-9 h-9 p-1 rounded hover:bg-zinc-700 transition-all duration-400 ease-in-out transform antialiased z-10"
-            class:border={toggle}
-            class:border-gray-500={toggle}>
+            <div class="group flex items-center justify-center bg-zinc-800 border border-gray-500 w-9 h-9 p-1 rounded hover:bg-zinc-700 transition-all duration-400 ease-in-out transform antialiased z-10">
                 <button class="text-gray-400" aria-label="toggle-button" on:click={goBack}>
                     <svg 
                     class="w-5 h-5 group-hover:text-orange-600 transform transition-transform duration-200 ease-in-out"
@@ -193,9 +185,7 @@
                 </button>
             </div>
 
-            <div class="group flex items-center justify-center bg-zinc-800 w-9 h-9 p-1 rounded hover:bg-zinc-700 transition-all duration-400 ease-in-out transform antialiased z-10"
-            class:border={toggle}
-            class:border-gray-500={toggle}>
+            <div class="group flex items-center justify-center bg-zinc-800 border border-gray-500 w-9 h-9 p-1 rounded hover:bg-zinc-700 transition-all duration-400 ease-in-out transform antialiased z-10">
                 <button class="text-gray-400" aria-label="save-button">
                     <svg xmlns="http://www.w3.org/2000/svg"
                     class="group-hover:text-orange-600 transform transition-transform duration-200 ease-in-out"
@@ -213,9 +203,7 @@
                 </button>
             </div>
 
-            <div class="group flex items-center justify-center bg-zinc-800 w-9 h-9 p-1 rounded hover:bg-zinc-700 transition-all duration-400 ease-in-out transform antialiased z-10"
-            class:border={toggle}
-            class:border-gray-500={toggle}>
+            <div class="group flex items-center justify-center bg-zinc-800 border border-gray-500 w-9 h-9 p-1 rounded hover:bg-zinc-700 transition-all duration-400 ease-in-out transform antialiased z-10">
                 <button class="text-gray-400" aria-label="toggle-button">
                     <svg xmlns="http://www.w3.org/2000/svg"
                     class="group-hover:text-orange-600 transform transition-transform duration-200 ease-in-out"
@@ -238,25 +226,13 @@
         
     </div>
 
-    <div class="prose prose-invert mt-10 ransition-all duration-400 ease-in-out" 
+    <div class="prose prose-invert mt-5 ransition-all duration-400 ease-in-out" 
     class:ml-30={!toggle}
     class:ml-70={toggle}
     class:display-none={!toggleNote}>
+        <textarea class="w-[70vw] h-[50vh] p-4 focus:outline-none focus:none resize-none font-mono" 
+        bind:value={markdown} placeholder="Type Markdown here..."></textarea>
         {@html content}
     </div>
     
-</main>  
-
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <!-- Robot head -->
-    <rect x="4" y="8" width="16" height="12" rx="2" ry="2" />
-    
-    <!-- Eyes -->
-    <circle cx="9" cy="14" r="1" />
-    <circle cx="15" cy="14" r="1" />
-    
-    <!-- Antenna -->
-    <line x1="12" y1="4" x2="12" y2="8" />
-    <circle cx="12" cy="4" r="1" />
-  </svg>
-  
+</main> 
