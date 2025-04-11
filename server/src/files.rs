@@ -15,3 +15,9 @@ pub fn save_file(path: &str, data: &str) -> Result<(), String> {
 pub fn delete_file(path: &str) -> Result<(), String> {
     fs::remove_file(path).map_err(|e| e.to_string())
 }
+
+#[command]
+pub fn create_file(path: &str) -> Result<(), String> {
+    fs::File::create(path).map_err(|e| e.to_string())?;
+    Ok(())
+}

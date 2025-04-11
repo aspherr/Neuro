@@ -11,7 +11,9 @@
     let toggleTree = true;
     let toggleNote = true;
     let toggleMarkdown = true;
+    let toggleCreateModal = false;
     let currentNote: string = '';
+    let newFileName: string = '';
     let markdown: string = '';
     $: content = marked(markdown);
     
@@ -66,6 +68,17 @@
         loadNotes()
     }
 
+    async function createNote(file: string | undefined) {
+        let filePath = `${notebookPath}/${notebookName}/${file}`;
+        await invoke<string>('create_file', { path: filePath });
+        
+        toggleCreateModal = false;
+        newFileName = '';
+
+        loadNotes();
+        openNote(filePath);
+    }
+
     function goBack() {
         goto('./');
     }
@@ -103,7 +116,7 @@
             </div>
 
             <div class="group flex items-center justify-center bg-zinc-800 border border-gray-500 w-9 h-9 p-1 rounded hover:bg-zinc-700 transition-all duration-400 ease-in-out transform antialiased z-10">
-                <button class="text-gray-400" aria-label="create-button">
+                <button class="text-gray-400" aria-label="create-button" on:click={() => {toggleCreateModal = !toggleCreateModal}}>
                     <svg xmlns="http://www.w3.org/2000/svg"
                     class="group-hover:text-orange-500 transistion-colors duration-200"
                     width="24" height="24"
@@ -276,4 +289,32 @@
             {@html content}
         {/if}
     </div>
+
+    {#if toggleCreateModal}
+    <div class="fixed inset-0 backdrop-blur-md flex items-center justify-center z-50">
+      <div class="bg-zinc-800 text-white p-6 rounded-lg w-full max-w-md shadow-lg">
+        <h2 class="text-xl font-bold mb-4">Create a New Note</h2>
+
+        <input
+          type="text"
+          bind:value={newFileName}
+          placeholder="Note name"
+          class="w-full p-3 rounded-md bg-zinc-700 text-white focus:outline-none focus:ring-2 focus:ring-orange-600"
+        />
+
+        <div class="flex justify-end gap-2 mt-6">
+          <button class="px-4 py-2 bg-zinc-600 rounded-md hover:bg-zinc-700 transition"
+            on:click={() => toggleCreateModal = false}>
+            Cancel
+          </button>
+
+          <button
+            class="px-4 py-2 bg-orange-700 rounded-md hover:bg-orange-600 transition"
+            on:click={() => {createNote(newFileName)}}>
+            Create
+          </button>
+        </div>
+      </div>
+    </div>
+    {/if}
 </main> 
