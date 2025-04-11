@@ -226,13 +226,34 @@
         
     </div>
 
+    <div class="group flex items-center ml-auto justify-center border border-gray-500 bg-zinc-800 w-9 h-9 p-1 mt-7 mr-7 rounded hover:bg-zinc-700 transition-all duration-400 ease-in-out transform antialiased z-10">
+        <button class="text-gray-400" aria-label="preview-button" on:click={() => toggleMarkdown = !toggleMarkdown}>
+            <svg 
+            xmlns="http://www.w3.org/2000/svg"
+            class="group-hover:text-orange-500 transistion-colors duration-200"
+            viewBox="0 0 24 24" 
+            width="24" height="24" 
+            fill="none" 
+            stroke="currentColor" 
+            stroke-width="2" 
+            stroke-linecap="round" 
+            stroke-linejoin="round">
+                <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z" />
+                <circle cx="12" cy="12" r="3" />
+            </svg>  
+        </button>
+    </div>
+
     <div class="prose prose-invert mt-5 ransition-all duration-400 ease-in-out" 
     class:ml-30={!toggle}
     class:ml-70={toggle}
     class:display-none={!toggleNote}>
-        <textarea class="w-[70vw] h-[50vh] p-4 focus:outline-none focus:none resize-none font-mono" 
-        bind:value={markdown} placeholder="Type Markdown here..."></textarea>
-        {@html content}
+        {#if toggleMarkdown}
+            <textarea class="w-[70vw] h-[50vh] p-4 focus:outline-none focus:none resize-none font-mono" 
+            bind:value={markdown} placeholder="Type Markdown here..."></textarea>
+
+        {:else}
+            {@html content}
+        {/if}
     </div>
-    
 </main> 
