@@ -5,7 +5,7 @@
     import { marked } from 'marked';
     import { invoke } from '@tauri-apps/api/core';
     import { goto } from '$app/navigation';
-    import { ask } from '@tauri-apps/plugin-dialog';
+    import { ask } from '@tauri-apps/plugin-dialog';    
 
     let toggle = true;
     let toggleTree = true;
