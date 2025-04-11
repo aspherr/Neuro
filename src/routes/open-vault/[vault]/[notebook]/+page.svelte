@@ -6,6 +6,7 @@
     import { invoke } from '@tauri-apps/api/core';
     import { goto } from '$app/navigation';
     import { ask } from '@tauri-apps/plugin-dialog';    
+    import toast, {Toaster} from 'svelte-5-french-toast'
 
     let toggle = true;
     let toggleTree = true;
@@ -54,6 +55,7 @@
 
     async function saveNote(content: string | undefined) {
         await invoke<string>('save_file', { path: currentNote, data: content});
+        toast.success('File Saved!') ;
     }
 
     async function deleteNote() {
@@ -64,6 +66,7 @@
 
         if (confirmDelete) {
             await invoke<string>('delete_file', { path: currentNote }); 
+            toast.success('File Deleted!')
         }
         loadNotes()
     }
@@ -77,6 +80,8 @@
 
         loadNotes();
         openNote(filePath);
+        toggleMarkdown = true
+        toast.success('File Created!')
     }
 
     function goBack() {
@@ -93,6 +98,8 @@
     <div class="h-screen w-65 flex-1 absolute bg-zinc-800 transistion duration-400 ease-in-out z-0"
         class:w-0={!toggle} 
         class:w-65={toggle}>
+        
+        <Toaster/>
 
         <div class="flex items-start mx-7 my-7 transition-all duration-400 ease-in-out" 
         class:flex-row={toggle}
@@ -220,7 +227,7 @@
             </div>
 
             <div class="group flex items-center justify-center bg-zinc-800 border border-gray-500 w-9 h-9 p-1 rounded hover:bg-zinc-700 transition-all duration-400 ease-in-out transform antialiased z-10">
-                <button class="text-gray-400" aria-label="save-button" on:click={() => {saveNote(markdown)}}>
+                <button     class="text-gray-400" aria-label="save-button" on:click={() => {saveNote(markdown)}}>
                     <svg xmlns="http://www.w3.org/2000/svg"
                     class="group-hover:text-orange-600 transform transition-transform duration-200 ease-in-out"
                     viewBox="0 0 24 24" 
