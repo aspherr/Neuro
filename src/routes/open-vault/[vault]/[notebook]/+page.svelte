@@ -122,9 +122,11 @@
         </div>
 
         <div>
+            <div class="absolute w-full border-t border-zinc-700 text-xs text-zinc-400 z-10"></div>
+
             {#if toggle}
             <ul class="absolute w-full font-base antialiased z-1" class:whitespace-wrap={!toggle} transition:fly={{ x: -100 }}>
-                <li class="w-full block">
+                <li class="w-full block mt-5">
                     <button class="group flex items-center w-full font-semibold hover:bg-zinc-700 px-4 py-1 transition-colors duration-200 antialiased"
                     on:click={() => toggleTree = !toggleTree}>
                         <svg 
