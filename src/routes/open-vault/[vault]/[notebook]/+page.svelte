@@ -4,7 +4,7 @@
     import { readDir } from '@tauri-apps/plugin-fs';
     import { marked } from 'marked';
     import { invoke } from '@tauri-apps/api/core';
-  import { goto } from '$app/navigation';
+    import { goto } from '$app/navigation';
 
     let toggle = true;
     let toggleTree = true;
@@ -125,7 +125,7 @@
         
         <div class="absolute bottom-0 w-full border-t border-zinc-700 pb-18 text-xs text-zinc-400"></div>
 
-        <button class="group flex items-center justify-center bg-zinc-800 w-9 h-9 p-1 mt-190 ml-7 rounded hover:bg-zinc-700 transition-colors duration-200 antialiased z-10"
+        <button class="group flex items-center justify-center bg-zinc-800 w-9 h-9 p-1 mt-213.5 ml-7 rounded hover:bg-zinc-700 transition-colors duration-200 antialiased z-10"
         class:border={toggle}
         class:border-gray-500={toggle}
         on:click={goBack}
