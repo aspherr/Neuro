@@ -84,6 +84,21 @@
         toast.success('File Created!')
     }
 
+    function modeNotification() {
+        toggleMarkdown = !toggleMarkdown;
+
+        if (toggleMarkdown) {
+            toast.success('Editor Mode', {
+                icon: '🖊️'
+            })
+        
+        } else {
+            toast.success('Preview Mode', {
+                icon: '👁️'
+            }) 
+        }
+    }
+
     function goBack() {
         goto('./');
     }
@@ -268,7 +283,7 @@
     </div>
 
     <div class="group flex items-center ml-auto justify-center border border-gray-500 bg-zinc-800 w-9 h-9 p-1 mt-7 mr-7 rounded hover:bg-zinc-700 transition-all duration-400 ease-in-out transform antialiased z-10">
-        <button class="text-gray-400" aria-label="preview-button" on:click={() => toggleMarkdown = !toggleMarkdown}>
+        <button class="text-gray-400" aria-label="preview-button" on:click={modeNotification}>
             <svg 
             xmlns="http://www.w3.org/2000/svg"
             class="group-hover:text-orange-500 transistion-colors duration-200"
