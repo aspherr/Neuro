@@ -244,7 +244,7 @@
         </button>
     </div>
 
-    <div class="prose prose-invert mt-5 ransition-all duration-400 ease-in-out" 
+    <div class="prose prose-invert transition-all duration-400 ease-in-out" 
     class:ml-30={!toggle}
     class:ml-70={toggle}
     class:display-none={!toggleNote}>
