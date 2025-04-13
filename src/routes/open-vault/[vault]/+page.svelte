@@ -83,22 +83,19 @@
     <div class="p-6 border-b border-zinc-800 flex items-center justify-between">
       <h1 class="text-3xl font-bold">Your Notebooks</h1>
 
-      <button
-        aria-label="create-button"
-        class="pr-2 text-gray-400 hover:text-orange-600 transition antialiased"
-        on:click={() => showModal = true}
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="w-6 h-6"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          stroke-width="3"
-        >
-          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
-        </svg>
-      </button>
+      <div class="group flex items-center justify-center bg-zinc-800 border border-gray-500 w-9 h-9 p-1 rounded hover:bg-zinc-700 transition-all duration-400 ease-in-out transform antialiased z-10">
+        <button class="text-gray-400" aria-label="create-button" on:click={() => showModal = true}>
+            <svg xmlns="http://www.w3.org/2000/svg"
+            class="group-hover:text-orange-500 transistion-colors duration-200"
+            width="24" height="24"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+            </svg>
+        </button>
+      </div>
     </div>
 
     {#if showModal}

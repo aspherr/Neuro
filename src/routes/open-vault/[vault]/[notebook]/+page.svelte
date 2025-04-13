@@ -305,7 +305,7 @@
     class:ml-70={toggle}
     class:display-none={!toggleNote}>
         {#if toggleMarkdown}
-            <textarea class="w-[70vw] h-[90vh] p-4 focus:outline-none focus:none resize-none font-mono" 
+            <textarea class="w-[70vw] h-[100vh] p-4 focus:outline-none focus:none resize-none font-mono" 
             bind:value={markdown} placeholder="Type Markdown here..."></textarea>
 
         {:else}
