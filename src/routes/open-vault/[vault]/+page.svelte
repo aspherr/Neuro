@@ -53,7 +53,7 @@
     }
 
     async function goBack() {
-        await win.setSize(new LogicalSize(800, 600));
+        await win.setSize(new LogicalSize(800, 650));
         await win.center();
         goto("/");
     }
