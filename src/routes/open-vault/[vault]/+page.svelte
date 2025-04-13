@@ -180,14 +180,19 @@
   
     <!-- Footer with vault path -->
     <div class="flex items-center gap-2 px-6 py-4 border-t border-zinc-800 text-gray-500 text-sm">
-      <button aria-label='back-button' class="text-gray-400 hover:text-orange-600 text-base flex items-center pb-0.5"
-      on:click={goBack}>
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-      </svg>
-      </button>
+      <div class="group flex items-center justify-center bg-zinc-800 border border-gray-500 w-9 h-9 p-1 rounded hover:bg-zinc-700 transition-all duration-400 ease-in-out transform antialiased z-10">
+        <button class="text-gray-400" aria-label="toggle-button" on:click={goBack}>
+            <svg 
+            class="w-5 h-5 group-hover:text-orange-600 transform transition-transform duration-200 ease-in-out"
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5l-7 7 7 7" />
+            </svg>
+        </button>
+      </div>
     
-      <span>
+      <span class="pl-3">
         Vault location: <span class="text-gray-300">{decodedPath}</span>
       </span>
     </div>
