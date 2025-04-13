@@ -27,7 +27,8 @@ pub fn run() {
             files::save_file,
             files::delete_file,
             files::create_file,
-            files::delete_folder
+            files::delete_folder,
+            files::create_folder
             ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

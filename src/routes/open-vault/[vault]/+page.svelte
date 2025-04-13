@@ -31,18 +31,12 @@
         return;
       }
 
-      try {
-        const notebookPath = `${decodedPath}/${notebookName}`;
-        await mkdir(notebookPath, { recursive: true });
-        toast.success('Notebook Created!');
+      const notebookPath = `${decodedPath}/${notebookName}`;
+      await invoke<string>('create_folder', { path: notebookPath });
+      toast.success('Notebook Created!');
 
-        await loadNotebooks();
+      await loadNotebooks();
         
-      } catch (err) {
-        console.error(err);
-        alert(err);
-      }
-
       showModal = false;
       notebookName = '';
     }

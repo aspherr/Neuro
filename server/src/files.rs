@@ -26,3 +26,9 @@ pub fn create_file(path: &str) -> Result<(), String> {
 pub fn delete_folder(path: &str) -> Result<(), String> {
     fs::remove_dir_all(path).map_err(|e| e.to_string())
 }
+
+#[command]
+pub fn create_folder(path: &str) -> Result<(), String> {
+    fs::create_dir_all(path).map_err(|e| e.to_string())?;
+    Ok(())
+}
