@@ -6,6 +6,7 @@
     import { goto } from "$app/navigation";
     import { ask } from '@tauri-apps/plugin-dialog'; 
     import { invoke } from '@tauri-apps/api/core';
+    import toast, {Toaster} from 'svelte-5-french-toast'
 
     const win = Window.getCurrent();
     let showModal = false;
@@ -33,7 +34,7 @@
       try {
         const notebookPath = `${decodedPath}/${notebookName}`;
         await mkdir(notebookPath, { recursive: true });
-        alert("Notebook created successfully");
+        toast.success('Notebook Created!');
 
         await loadNotebooks();
         
@@ -80,7 +81,8 @@
       
       if (confirmDelete) {
         let notebookPath = `${decodedPath}/${notebook}`;
-        await invoke<string>('delete_folder', { path: notebookPath }); 
+        await invoke<string>('delete_folder', { path: notebookPath });
+        toast.success('Notebook Deleted!')
       }
       loadNotebooks()
     }
@@ -94,6 +96,8 @@
 </script>
 
 <main class="h-screen w-screen bg-zinc-900 text-white flex flex-col">
+    <Toaster/>
+  
     <!-- Header -->
     <div class="p-6 border-b border-zinc-800 flex items-center justify-between">
       <h1 class="text-3xl font-bold">Your Notebooks</h1>
