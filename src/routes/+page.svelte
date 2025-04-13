@@ -47,7 +47,7 @@
   <div class="mt-11 w-full flex flex-col items-center">
     <div class="w-full max-w-md mx-auto mt-6 space-y-3">
 
-      <div class="flex justify-between items-center px-4 py-3 border-b border-gray-700">
+      <div class="flex justify-between items-center px-1 py-3 border-b border-gray-700">
           <div>
               <h3 class="text-white text-lg font-medium">Create new vault</h3>
               <p class="text-gray-400 text-sm">Create a new Neuro vault under a folder.</p>
@@ -59,7 +59,7 @@
       </div>
   
 
-      <div class="flex justify-between items-center px-4 py-3 border-b border-gray-700">
+      <div class="flex justify-between items-center px-1 py-3 border-b border-gray-700">
           <div>
               <h3 class="text-white text-lg font-medium">Open folder as vault</h3>
               <p class="text-gray-400 text-sm">Choose an existing folder of Markdown files.</p>
@@ -69,5 +69,15 @@
               Open
           </button>
       </div>
+
+      <div class="flex justify-between items-center px-1 py-3 border-b border-gray-700">
+        <div>
+            <h3 class="text-white text-lg font-medium">Open vault from Neuro sync</h3>
+            <p class="text-gray-400 text-sm">Set up a remote vault.</p>
+        </div>
+        <button class="w-24 h-10 bg-gray-700 text-white rounded-md hover:bg-gray-600 transition">
+            Sign In
+        </button>
+    </div>
   </div>
 </main>
