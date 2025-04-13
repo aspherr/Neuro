@@ -21,3 +21,8 @@ pub fn create_file(path: &str) -> Result<(), String> {
     fs::File::create(path).map_err(|e| e.to_string())?;
     Ok(())
 }
+
+#[command]
+pub fn delete_folder(path: &str) -> Result<(), String> {
+    fs::remove_dir_all(path).map_err(|e| e.to_string())
+}

@@ -4,6 +4,8 @@
     import { readDir } from '@tauri-apps/plugin-fs';
     import { mkdir } from '@tauri-apps/plugin-fs';
     import { goto } from "$app/navigation";
+    import { ask } from '@tauri-apps/plugin-dialog'; 
+    import { invoke } from '@tauri-apps/api/core';
 
     const win = Window.getCurrent();
     let showModal = false;
@@ -70,6 +72,19 @@
       goto(`${encodedPath}/${notebook}`);
     }
 
+    async function deleteNotebook(notebook: string | undefined) {
+      const confirmDelete = await ask('This action cannot be reverted. Are you sure?', {
+        title: 'Delete Notebook',
+        kind: 'warning',
+        });
+      
+      if (confirmDelete) {
+        let notebookPath = `${decodedPath}/${notebook}`;
+        await invoke<string>('delete_folder', { path: notebookPath }); 
+      }
+      loadNotebooks()
+    }
+
     onMount(async() => {
         await win.setSize(new LogicalSize(1400, 1000));
         await win.center();
@@ -83,18 +98,20 @@
     <div class="p-6 border-b border-zinc-800 flex items-center justify-between">
       <h1 class="text-3xl font-bold">Your Notebooks</h1>
 
-      <div class="group flex items-center justify-center bg-zinc-800 border border-gray-500 w-9 h-9 p-1 rounded hover:bg-zinc-700 transition-all duration-400 ease-in-out transform antialiased z-10">
-        <button class="text-gray-400" aria-label="create-button" on:click={() => showModal = true}>
-            <svg xmlns="http://www.w3.org/2000/svg"
-            class="group-hover:text-orange-500 transistion-colors duration-200"
-            width="24" height="24"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            stroke-width="1.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
-            </svg>
-        </button>
+      <div class="flex gap-4">
+        <div class="group flex items-center justify-center bg-zinc-800 border border-gray-500 w-9 h-9 p-1 rounded hover:bg-zinc-700 transition-all duration-400 ease-in-out transform antialiased z-10">
+          <button class="text-gray-400" aria-label="create-button" on:click={() => showModal = true}>
+              <svg xmlns="http://www.w3.org/2000/svg"
+              class="group-hover:text-orange-500 transistion-colors duration-200"
+              width="24" height="24"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="1.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+              </svg>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -136,10 +153,28 @@
       {:else}
       <div class="grid grid-cols-2 md:grid-cols-6 gap-4">
         {#each notebooks as notebook (notebook.name)}
-        <button class="p-4 py-6 min-h-[200px] bg-zinc-800 hover:bg-zinc-700 transition cursor-pointer border-l-5 border-orange-600 rounded"
+        <div class="relative group">
+          <button class="p-4 py-6 w-full min-h-[250px] bg-zinc-800 hover:bg-zinc-700 transition cursor-pointer border-l-5 border-orange-600 rounded"
         on:click={() => openNotebook(notebook.name)}>
           <h2 class="font-bold text-lg">{notebook.name}</h2>
         </button>
+
+        <button class="absolute top-2 right-2  opacity-0 group-hover:opacity-100" aria-label="delete-button" on:click={() => {deleteNotebook(notebook.name)}}>
+            <svg xmlns="http://www.w3.org/2000/svg"
+            class="text-gray-400 hover:text-red-500"
+            viewBox="0 0 24 24" 
+            width="24" height="24" 
+            fill="none" stroke="currentColor" 
+            stroke-width="1.5" 
+            stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 6h18" />
+                <path d="M8 6V4h8v2" />
+                <path d="M19 6l-1 14H6L5 6" />
+                <line x1="10" y1="11" x2="10" y2="17" />
+                <line x1="14" y1="11" x2="14" y2="17" />
+            </svg>  
+        </button>
+        </div>
         {/each}
       </div>
       {/if}
