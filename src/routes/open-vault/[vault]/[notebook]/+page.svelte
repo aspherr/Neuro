@@ -16,6 +16,11 @@
     let currentNote: string = '';
     let newFileName: string = '';
     let markdown: string = '';
+    $: wordCount = markdown
+                    .trim()
+                    .split(/\s+/)
+                    .filter(word => word && !word.startsWith('#'))
+                    .filter(Boolean).length;
     $: content = marked(markdown);
     
 
@@ -311,6 +316,17 @@
         {:else}
             {@html content}
         {/if}
+
+        <div class="absolute bottom-0 right-4 pr-3">
+            <p class="flex items-center justify-center bg-zinc-900 text-center text-sm w-25 h-8 rounded-4xl border border-gray-500">
+                {#if wordCount == 1}
+                    {wordCount} Word
+                
+                {:else}
+                    {wordCount} Words
+                {/if}
+            </p>
+        </div>
     </div>
 
     {#if toggleCreateModal}
