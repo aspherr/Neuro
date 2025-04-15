@@ -14,6 +14,7 @@
     let toggleMarkdown = false;
     let toggleCreateModal = false;
     let toggleAIModal = false;
+    let userPrompt: string = '';
     let currentNote: string = '';
     let newFileName: string = '';
     let markdown: string = '';
@@ -104,11 +105,15 @@
         }
     }
 
-    async function ask_neuro() {
-        let response = await invoke("neuro", {
-            prompt: "Hi there, this is a test to see if I am connect to OpenAI. Respond with 'Neuro is ALIVE!' if the connection is valid"
-        })
-        console.log(response);
+    async function ask_neuro(prompt: string) {
+        let adjustedPrompt = `${prompt}\n\nPlease respond in markdown and dont exceed 3 paragraphs.`;
+        let response = await invoke<string>("neuro", { 
+            prompt: adjustedPrompt
+        });
+
+        markdown += `\n\n${response}`
+        toggleAIModal = !toggleAIModal;
+        userPrompt = "";
     }
 
     function goBack() {
@@ -272,7 +277,7 @@
             </div>
 
             <div class="group flex items-center justify-center bg-zinc-800 border border-gray-500 w-9 h-9 p-1 rounded hover:bg-zinc-700 transition-all duration-400 ease-in-out transform antialiased z-10">
-                <button class="text-gray-400" aria-label="prompt-button" on:click={ask_neuro}>
+                <button class="text-gray-400" aria-label="prompt-button" on:click={() => {toggleAIModal = !toggleAIModal}}>
                     <svg xmlns="http://www.w3.org/2000/svg"
                     class="group-hover:text-orange-600 transform transition-transform duration-200 ease-in-out"
                     viewBox="0 0 24 24" 
@@ -363,6 +368,37 @@
             class="px-4 py-2 bg-orange-700 rounded-md hover:bg-orange-600 transition"
             on:click={() => {createNote(newFileName)}}>
             Create
+          </button>
+        </div>
+      </div>
+    </div>
+    {/if}
+
+
+    {#if toggleAIModal}
+    <div class="fixed inset-0 backdrop-blur-md flex items-center justify-center z-50">
+      <div class="bg-zinc-800 text-white p-6 rounded-lg w-full max-w-md shadow-lg">
+        <h2 class="text-xl font-bold mb-4">Hi, Neuro here! 😊</h2>
+
+        <div class="relative">
+            <input
+            type="text"
+            bind:value={userPrompt}
+            placeholder="Ask away..."
+            class="w-full p-3 rounded-md bg-zinc-700 text-white focus:outline-none focus:ring-2 focus:ring-orange-600"
+            />
+        </div>
+
+        <div class="flex justify-end gap-2 mt-6">
+          <button class="px-4 py-2 bg-zinc-600 rounded-md hover:bg-zinc-700 transition"
+            on:click={() => toggleAIModal = false}>
+            Cancel
+          </button>
+
+          <button
+            class="px-4 py-2 bg-orange-700 rounded-md hover:bg-orange-600 transition"
+            on:click={() => {ask_neuro(userPrompt)}}>
+            Think
           </button>
         </div>
       </div>
