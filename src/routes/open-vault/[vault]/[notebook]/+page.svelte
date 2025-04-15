@@ -107,9 +107,14 @@
 
     async function ask_neuro(prompt: string) {
         let adjustedPrompt = `${prompt}\n\nPlease respond in markdown and dont exceed 3 paragraphs.`;
-        let response = await invoke<string>("neuro", { 
-            prompt: adjustedPrompt
-        });
+        const response = await toast.promise(
+            invoke<string>("neuro", { prompt: adjustedPrompt }),
+            {
+                loading: 'Neuro is thinking...',
+                success: 'Your answer has arrived!',
+                error: 'Sorry there was a problem!',
+            }
+        );
 
         markdown += `\n\n${response}`
         toggleAIModal = !toggleAIModal;
@@ -131,7 +136,9 @@
         class:w-0={!toggle} 
         class:w-65={toggle}>
         
-        <Toaster/>
+        {#if !toggleAIModal}
+            <Toaster />
+        {/if}
 
         <div class="flex items-start mx-7 my-7 transition-all duration-400 ease-in-out" 
         class:flex-row={toggle}
@@ -376,32 +383,33 @@
 
 
     {#if toggleAIModal}
-    <div class="fixed inset-0 backdrop-blur-md flex items-center justify-center z-50">
-      <div class="bg-zinc-800 text-white p-6 rounded-lg w-full max-w-md shadow-lg">
-        <h2 class="text-xl font-bold mb-4">Hi, Neuro here! 😊</h2>
+        <Toaster />
+        <div class="fixed inset-0 backdrop-blur-md flex items-center justify-center z-50">
+        <div class="bg-zinc-800 text-white p-6 rounded-lg w-full max-w-md shadow-lg">
+            <h2 class="text-xl font-bold mb-4">Hi, Neuro here! 😊</h2>
 
-        <div class="relative">
-            <input
-            type="text"
-            bind:value={userPrompt}
-            placeholder="Ask away..."
-            class="w-full p-3 rounded-md bg-zinc-700 text-white focus:outline-none focus:ring-2 focus:ring-orange-600"
-            />
+            <div class="relative">
+                <input
+                type="text"
+                bind:value={userPrompt}
+                placeholder="Ask away..."
+                class="w-full p-3 rounded-md bg-zinc-700 text-white focus:outline-none focus:ring-2 focus:ring-orange-600"
+                />
+            </div>
+
+            <div class="flex justify-end gap-2 mt-6">
+            <button class="px-4 py-2 bg-zinc-600 rounded-md hover:bg-zinc-700 transition"
+                on:click={() => toggleAIModal = false}>
+                Cancel
+            </button>
+
+            <button
+                class="px-4 py-2 bg-orange-700 rounded-md hover:bg-orange-600 transition"
+                on:click={() => {ask_neuro(userPrompt)}}>
+                Think
+            </button>
+            </div>
         </div>
-
-        <div class="flex justify-end gap-2 mt-6">
-          <button class="px-4 py-2 bg-zinc-600 rounded-md hover:bg-zinc-700 transition"
-            on:click={() => toggleAIModal = false}>
-            Cancel
-          </button>
-
-          <button
-            class="px-4 py-2 bg-orange-700 rounded-md hover:bg-orange-600 transition"
-            on:click={() => {ask_neuro(userPrompt)}}>
-            Think
-          </button>
         </div>
-      </div>
-    </div>
     {/if}
 </main> 
