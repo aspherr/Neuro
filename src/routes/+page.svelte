@@ -14,6 +14,10 @@
     goto("/create-vault");
   }
 
+  function userAuth() {
+    goto("/user-auth/login");
+  }
+
   const openVault = async () => {
     try {
       const path = await open({
@@ -53,7 +57,7 @@
               <p class="text-gray-400 text-sm">Create a new Neuro vault under a folder.</p>
           </div>
           <button class="w-24 h-10 bg-orange-700 border border-orange-500 text-white rounded-md hover:bg-orange-600 transition antialiased"
-          onclick={createVault}>
+          on:click={createVault}>
               Create
           </button>
       </div>
@@ -65,7 +69,7 @@
               <p class="text-gray-400 text-sm">Choose an existing folder of Markdown files.</p>
           </div>
           <button class="w-24 h-10 bg-gray-700 border border-gray-500 text-white rounded-md hover:bg-gray-600 transition"
-          onclick={openVault}>
+          on:click={openVault}>
               Open
           </button>
       </div>
@@ -75,7 +79,8 @@
             <h3 class="text-white text-lg font-medium">Open vault from Neuro sync</h3>
             <p class="text-gray-400 text-sm">Set up a remote vault.</p>
         </div>
-        <button class="w-24 h-10 bg-gray-700 border border-gray-500 text-white rounded-md hover:bg-gray-600 transition">
+        <button class="w-24 h-10 bg-gray-700 border border-gray-500 text-white rounded-md hover:bg-gray-600 transition" 
+        on:click={userAuth}>
             Sign In
         </button>
     </div>
