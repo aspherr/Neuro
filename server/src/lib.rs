@@ -1,6 +1,9 @@
+mod files;
+mod llm;
+
 use log::info;
 use simple_logger;
-mod files;
+use llm::ai::call_neuro;
 
 #[tauri::command]
 fn get_app_version(app: tauri::AppHandle) -> String {
@@ -10,6 +13,13 @@ fn get_app_version(app: tauri::AppHandle) -> String {
 #[tauri::command]
 fn logger(message: String) {
     info!("Log: {}", message);
+}
+
+#[tauri::command]
+async fn neuro(prompt: String) -> Result<String, String> {
+    call_neuro(&prompt)
+    .await
+    .map_err(|e| e.to_string())
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -28,7 +38,8 @@ pub fn run() {
             files::delete_file,
             files::create_file,
             files::delete_folder,
-            files::create_folder
+            files::create_folder,
+            neuro
             ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

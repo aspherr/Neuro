@@ -13,6 +13,7 @@
     let toggleNote = true;
     let toggleMarkdown = false;
     let toggleCreateModal = false;
+    let toggleAIModal = false;
     let currentNote: string = '';
     let newFileName: string = '';
     let markdown: string = '';
@@ -23,7 +24,6 @@
                     .filter(Boolean).length;
     $: content = marked(markdown);
     
-
     export let data: {
         path: string;
         name: string;
@@ -102,6 +102,13 @@
                 icon: '👁️'
             }) 
         }
+    }
+
+    async function ask_neuro() {
+        let response = await invoke("neuro", {
+            prompt: "Hi there, this is a test to see if I am connect to OpenAI. Respond with 'Neuro is ALIVE!' if the connection is valid"
+        })
+        console.log(response);
     }
 
     function goBack() {
@@ -265,7 +272,7 @@
             </div>
 
             <div class="group flex items-center justify-center bg-zinc-800 border border-gray-500 w-9 h-9 p-1 rounded hover:bg-zinc-700 transition-all duration-400 ease-in-out transform antialiased z-10">
-                <button class="text-gray-400" aria-label="toggle-button">
+                <button class="text-gray-400" aria-label="prompt-button" on:click={ask_neuro}>
                     <svg xmlns="http://www.w3.org/2000/svg"
                     class="group-hover:text-orange-600 transform transition-transform duration-200 ease-in-out"
                     viewBox="0 0 24 24" 
