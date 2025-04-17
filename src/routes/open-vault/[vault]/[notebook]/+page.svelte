@@ -245,8 +245,8 @@
         <div class="absolute bottom-0 w-full border-t border-zinc-700 pb-18 text-xs text-zinc-400"></div>
 
         <div class="flex items-start mx-7 transition-all duration-400 ease-in-out transform"
-            class:my-[855px]={toggle}
-            class:my-[625px]={!toggle}
+            class:my-[760px]={toggle}
+            class:my-[530px]={!toggle}
             class:flex-row={toggle}
             class:flex-col-reverse={!toggle}
             class:space-x-11={toggle}
