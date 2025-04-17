@@ -1,4 +1,5 @@
 use std::fs;
+use std::path::PathBuf;
 use tauri::command;
 
 #[command]
@@ -32,3 +33,16 @@ pub fn create_folder(path: &str) -> Result<(), String> {
     fs::create_dir_all(path).map_err(|e| e.to_string())?;
     Ok(())
 }
+
+#[command]
+pub fn get_first_file(path: &str) -> Option<PathBuf> {
+    let mut dir = fs::read_dir(path).ok()?;
+    let file = dir.next()?;
+    let entry = file.ok()?;
+    let path = entry.path();
+    if path.metadata().ok()?.is_file() {
+        return Some(path);
+    }
+
+    None
+}   

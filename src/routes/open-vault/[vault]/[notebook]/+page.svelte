@@ -50,13 +50,14 @@
         }));
     }
 
-    async function openNote(file: string | undefined) {
-        let filePath = `${notebookPath}/${notebookName}/${file}`;
-        currentNote = filePath;
-        const out = await invoke<string>('read_file', { path: filePath });
-        markdown = out;
-        content = marked(markdown);
-        toggleNote = !toggleNote;
+    async function openNote(filePath: string | undefined) {
+        if (filePath) {
+            currentNote = filePath;
+            const out = await invoke<string>('read_file', { path: filePath });
+            markdown = out;
+            content = marked(markdown);
+            toggleNote = !toggleNote;
+        }
     }
 
     async function saveNote(content: string | undefined) {
@@ -127,6 +128,13 @@
 
     onMount(async() => {
         loadNotes();
+        let firsFilePath = await invoke<string>('get_first_file', {
+            path: `${notebookPath}/${notebookName}`}
+        )
+
+        if (firsFilePath) {
+            openNote(firsFilePath);
+        }
     });
 
 </script>
@@ -217,7 +225,7 @@
                     <ul class="pt-1">
                         {#each notes as note (note.name)}
                             <button class="w-full p-0.5 pl-10 flex items-center space-x-2 hover:bg-zinc-700 transistion-colors duration-200 antialiased"
-                            on:click={() => openNote(note.name)}>
+                            on:click={() => openNote(`${notebookPath}/${notebookName}/${note.name}`)}>
                                 <svg
                                 class="w-4 h-4 text-gray-500"
                                 class:text-orange-600={note.name == currentNote.split("/").pop()}

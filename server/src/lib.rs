@@ -39,6 +39,7 @@ pub fn run() {
             files::create_file,
             files::delete_folder,
             files::create_folder,
+            files::get_first_file,
             neuro
             ])
         .run(tauri::generate_context!())
