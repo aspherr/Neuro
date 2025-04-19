@@ -37,12 +37,13 @@ pub fn create_folder(path: &str) -> Result<(), String> {
 #[command]
 pub fn get_first_file(path: &str) -> Option<PathBuf> {
     let mut dir = fs::read_dir(path).ok()?;
-    let file = dir.next()?;
-    let entry = file.ok()?;
-    let path = entry.path();
-    if path.metadata().ok()?.is_file() {
+    let file = dir.next()?.ok()?;
+    let path = file.path();
+    
+    if path.is_file() {
         return Some(path);
+    
+    } else {
+        None
     }
-
-    None
-}   
+} 

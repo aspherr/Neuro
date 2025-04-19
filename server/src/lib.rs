@@ -1,5 +1,6 @@
 mod files;
 mod llm;
+mod db;
 
 use log::info;
 use simple_logger;
