@@ -3,6 +3,7 @@
     import { invoke } from '@tauri-apps/api/core';
     import { fade, slide } from "svelte/transition";
     import { goto } from "$app/navigation";
+    import { toast, Toaster } from 'svelte-5-french-toast';
   
     let appVersion = 'loading...';
     
@@ -34,14 +35,35 @@
         } else if (visbility === 'confirm-pass') {
             confirmPasswordVisbility = !confirmPasswordVisbility;
         }
-    }                                                                                               
+    }
+    
+    async function create_account() {
+        if (forename.length == 0) {
+            toast.error("Please enter your forename");
+            return;
+        
+        } else if (!validEmail) {
+            toast.error("Enter a valid email");
+            return;
+        
+        } else if (password.length === 0 || confirmPass.length === 0) {
+            toast.error("Enter a password");
+            return;
+        
+        } else if (password != confirmPass) {
+            toast.error("Passwords do not match");
+            return;
+        }
+    }
 
     function login() {
         goto("./login");
     }   
   </script>
   
-  <main class="h-screen w-screen bg-zinc-900 text-white flex flex-col items-center justify-center space-y-6">    
+  <main class="h-screen w-screen bg-zinc-900 text-white flex flex-col items-center justify-center space-y-6">
+    <Toaster/>
+
     <div out:fade={{ duration: 150 }} class="text-center">
         <h1 class="Satoshi font-bold text-5xl mt-7">Neuro</h1>
         <p class="Satoshi text-base text-gray-400">Version: {appVersion}</p>
@@ -107,7 +129,8 @@
             </button>
         </div>
 
-        <button class="w-full bg-orange-700 text-white font-semibold py-3 mt-3 rounded-md hover:bg-orange-600 transition">
+        <button class="w-full bg-orange-700 text-white font-semibold py-3 mt-3 rounded-md hover:bg-orange-600 transition"
+        on:click={create_account}>
             Create Account
         </button>
 
