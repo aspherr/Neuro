@@ -3,6 +3,7 @@
     import { invoke } from '@tauri-apps/api/core';
     import { fade, slide } from "svelte/transition";
     import { goto } from "$app/navigation";
+  import toast from 'svelte-5-french-toast';
   
     let appVersion = 'loading...';
     let email = "";
@@ -22,10 +23,17 @@
     }
 
     async function verify_login() {
-        await invoke('verify_user', {
+        let auth = await invoke('verify_user', {
             email: email,
             password: password
-        })
+        });
+
+        if (auth) {
+            goto("../../synced-vault")
+        
+        } else {
+            toast.error("Failed to login")
+        }
     }
 
     function register() {
