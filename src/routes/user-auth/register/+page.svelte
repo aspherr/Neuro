@@ -51,7 +51,7 @@
             <input type={passwordVisbility ? "text" : "password"} bind:value={password} placeholder="Enter your password"
             class="w-full bg-zinc-700 text-white p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-600"/>
 
-            <button class="text-gray-400 absolute right-3 pt-12 transform -translate-y-1/2 hover:text-orange-500 transistion-colors duration-200" aria-label="preview-button"
+            <button class="text-gray-400 absolute right-3 top-1/2 transform -translate-y-1/2 hover:text-orange-500 transition-colors duration-200" aria-label="preview-button"
             on:click={() => {toggleVisibility('main-pass')}}>
                 <svg 
                 xmlns="http://www.w3.org/2000/svg"
@@ -70,9 +70,9 @@
 
         <div class="relative w-full mb-4">
             <input type={confirmPasswordVisbility ? "text" : "password"} bind:value={confirmPass} placeholder="Confirm your password"
-            class="w-full bg-zinc-700 text-white p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-600 mb-4"/>
+            class="w-full bg-zinc-700 text-white p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-600"/>
 
-            <button class="text-gray-400 absolute right-3 pt-12 transform -translate-y-1/2 hover:text-orange-500 transistion-colors duration-200" aria-label="preview-button"
+            <button class="text-gray-400 absolute right-3 top-1/2 transform -translate-y-1/2 hover:text-orange-500 transition-colors duration-200" aria-label="preview-button"
             on:click={() => {toggleVisibility('confirm-pass')}}>
                 <svg 
                 xmlns="http://www.w3.org/2000/svg"
@@ -89,7 +89,7 @@
             </button>
         </div>
 
-        <button class="w-full bg-orange-700 text-white font-semibold py-3 rounded-md hover:bg-orange-600 transition">
+        <button class="w-full bg-orange-700 text-white font-semibold py-3 mt-3 rounded-md hover:bg-orange-600 transition">
             Create Account
         </button>
 
