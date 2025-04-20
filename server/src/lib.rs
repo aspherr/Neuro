@@ -5,7 +5,7 @@ mod db;
 use log::info;
 use simple_logger;
 use llm::ai::call_neuro;
-use db::ops::create_user;
+use db::ops::{create_user, get_user};
 use bcrypt::{hash, DEFAULT_COST};
 
 #[tauri::command]
@@ -33,6 +33,13 @@ async fn add_user(forename: String, email: String, password: String) -> Result<S
     .map_err(|e| e.to_string())
 }
 
+#[tauri::command]
+async fn verify_user(email: String, password: String) -> Result<String, String> {
+    get_user(email, password)
+        .await
+        .map_err(|e| e.to_string())
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     simple_logger::init().unwrap();
@@ -45,6 +52,7 @@ pub fn run() {
             get_app_version, 
             logger,
             add_user,
+            verify_user,
             files::read_file,
             files::save_file,
             files::delete_file,

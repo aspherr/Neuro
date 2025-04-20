@@ -16,6 +16,13 @@
         goto("../");
     }
 
+    async function verify_login() {
+        await invoke('verify_user', {
+            email: email,
+            password: password
+        })
+    }
+
     function register() {
         goto("./register");
     }
@@ -57,7 +64,8 @@
             </button>
         </div>
 
-        <button class="w-full bg-orange-700 text-white font-semibold py-3 rounded-md hover:bg-orange-600 transition">
+        <button class="w-full bg-orange-700 text-white font-semibold py-3 rounded-md hover:bg-orange-600 transition"
+        on:click={verify_login}>
             Login
         </button>
 
