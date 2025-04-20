@@ -54,6 +54,16 @@
             toast.error("Passwords do not match");
             return;
         }
+
+        await invoke('add_user', {
+            forename: forename,
+            email: email,
+            password: confirmPass
+        });
+        toast.success("Account Created");
+        setTimeout(() => {
+            login();
+        }, 650);
     }
 
     function login() {
