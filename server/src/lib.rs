@@ -6,6 +6,7 @@ use log::info;
 use simple_logger;
 use llm::ai::call_neuro;
 use db::ops::create_user;
+use bcrypt::{hash, DEFAULT_COST};
 
 #[tauri::command]
 fn get_app_version(app: tauri::AppHandle) -> String {
@@ -26,7 +27,8 @@ async fn neuro(prompt: String) -> Result<String, String> {
 
 #[tauri::command]
 async fn add_user(forename: String, email: String, password: String) -> Result<String, String> {
-    create_user(forename, email, password)
+    let hashed_pass = hash(password, DEFAULT_COST).map_err(|e| e.to_string())?;
+    create_user(forename, email, hashed_pass)
     .await
     .map_err(|e| e.to_string())
 }
