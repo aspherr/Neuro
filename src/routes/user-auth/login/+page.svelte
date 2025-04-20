@@ -7,6 +7,7 @@
     let appVersion = 'loading...';
     let email = "";
     let password = "";
+    let passwordVisbility = true;
 
     onMount(async() => {
         appVersion = await invoke ('get_app_version');
@@ -14,6 +15,10 @@
 
     function goBack() {
         goto("../");
+    }
+
+    function toggleVisibility() {
+        passwordVisbility = !passwordVisbility
     }
 
     async function verify_login() {
@@ -45,10 +50,11 @@
         class="w-full bg-zinc-700 text-white p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-600 mb-4"/>
 
         <div class="relative w-full mb-4">
-            <input type="text" bind:value={password} placeholder="Enter your password"
-            class="w-full bg-zinc-700 text-white p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-600 mb-4"/>
+            <input type={passwordVisbility ? "password" : "text"} bind:value={password} placeholder="Enter your password"
+            class="w-full bg-zinc-700 text-white p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-600"/>
 
-            <button class="text-gray-400 absolute right-3 pt-12 transform -translate-y-1/2 hover:text-orange-500 transistion-colors duration-200" aria-label="preview-button">
+            <button class="text-gray-400 absolute right-3 top-1/2 transform -translate-y-1/2 hover:text-orange-500 transistion-colors duration-200" aria-label="preview-button"
+            on:click={toggleVisibility}>
                 <svg 
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24" 
