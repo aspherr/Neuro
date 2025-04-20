@@ -13,10 +13,19 @@
 
     let passwordVisbility = false;
     let confirmPasswordVisbility = false;
+
+    // taken from: https://uibakery.io/regex-library/email
+    const emailRegex = /^\S+@\S+\.\S+$/;
+    let validEmail = false;
         
     onMount(async() => {
         appVersion = await invoke ('get_app_version');
     });
+
+    function validateEmail() {
+        // true only if email conforms to regex condition
+        validEmail = emailRegex.test(email);
+    }
 
     function toggleVisibility(visbility: 'main-pass' | 'confirm-pass') {
         if (visbility === 'main-pass') {
@@ -44,8 +53,17 @@
         <input type="text" bind:value={forename} placeholder="Enter your forename"
         class="w-full bg-zinc-700 text-white p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-600 mb-4"/>
 
-        <input type="text" bind:value={email} placeholder="Enter your email"
-        class="w-full bg-zinc-700 text-white p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-600 mb-4"/>
+        <div class="relative w-full mb-4">
+            <input type="text" bind:value={email} placeholder="Enter your email"
+            class="w-full bg-zinc-700 text-white p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-600"
+            on:input={validateEmail}/>
+
+            <span class="absolute w-2.5 h-2.5 rounded-full right-3 top-1/2 transform -translate-y-1/2 mr-2 mt-0.5 antialiased"
+             class:bg-green-500={validEmail}
+             class:bg-red-500={!validEmail}
+             class:bg-zinc-800={email.length === 0}>
+            </span>
+        </div>
 
         <div class="relative w-full mb-4">
             <input type={passwordVisbility ? "text" : "password"} bind:value={password} placeholder="Enter your password"
