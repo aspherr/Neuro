@@ -1,6 +1,7 @@
 use redis::{AsyncCommands, RedisError, ErrorKind, RedisResult};
 use std::collections::HashMap;
 use super::client::conn;
+use super::client::generate_session_token;
 use super::models::User;
 use uuid::Uuid;
 
@@ -39,7 +40,8 @@ pub async fn get_user(email: String, password: String) -> RedisResult<String> {
     let _ = &account.email;
 
     if account.verify_password(&password) {
-        Ok(account.forename)
+        let session = generate_session_token(connection, account.forename).await?;
+        Ok(session)
         
     } else {
         Err(RedisError::from((ErrorKind::TypeError, "Invalid Credentials")))
