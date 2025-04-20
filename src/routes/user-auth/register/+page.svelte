@@ -5,19 +5,31 @@
     import { goto } from "$app/navigation";
   
     let appVersion = 'loading...';
+    
     let forename = "";
     let email = "";
     let password = "";
     let confirmPass = "";
 
+    let passwordVisbility = false;
+    let confirmPasswordVisbility = false;
+        
     onMount(async() => {
         appVersion = await invoke ('get_app_version');
     });
 
+    function toggleVisibility(visbility: 'main-pass' | 'confirm-pass') {
+        if (visbility === 'main-pass') {
+            passwordVisbility = !passwordVisbility;
+        
+        } else if (visbility === 'confirm-pass') {
+            confirmPasswordVisbility = !confirmPasswordVisbility;
+        }
+    }                                                                                               
 
     function login() {
         goto("./login");
-    }
+    }   
   </script>
   
   <main class="h-screen w-screen bg-zinc-900 text-white flex flex-col items-center justify-center space-y-6">    
@@ -36,10 +48,11 @@
         class="w-full bg-zinc-700 text-white p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-600 mb-4"/>
 
         <div class="relative w-full mb-4">
-            <input type="text" bind:value={password} placeholder="Enter your password"
+            <input type={passwordVisbility ? "text" : "password"} bind:value={password} placeholder="Enter your password"
             class="w-full bg-zinc-700 text-white p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-600"/>
 
-            <button class="text-gray-400 absolute right-3 pt-12 transform -translate-y-1/2 hover:text-orange-500 transistion-colors duration-200" aria-label="preview-button">
+            <button class="text-gray-400 absolute right-3 pt-12 transform -translate-y-1/2 hover:text-orange-500 transistion-colors duration-200" aria-label="preview-button"
+            on:click={() => {toggleVisibility('main-pass')}}>
                 <svg 
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24" 
@@ -56,10 +69,11 @@
         </div>
 
         <div class="relative w-full mb-4">
-            <input type="text" bind:value={confirmPass} placeholder="Confirm your password"
+            <input type={confirmPasswordVisbility ? "text" : "password"} bind:value={confirmPass} placeholder="Confirm your password"
             class="w-full bg-zinc-700 text-white p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-600 mb-4"/>
 
-            <button class="text-gray-400 absolute right-3 pt-12 transform -translate-y-1/2 hover:text-orange-500 transistion-colors duration-200" aria-label="preview-button">
+            <button class="text-gray-400 absolute right-3 pt-12 transform -translate-y-1/2 hover:text-orange-500 transistion-colors duration-200" aria-label="preview-button"
+            on:click={() => {toggleVisibility('confirm-pass')}}>
                 <svg 
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24" 
