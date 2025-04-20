@@ -5,6 +5,7 @@ mod db;
 use log::info;
 use simple_logger;
 use llm::ai::call_neuro;
+use db::ops::create_user;
 
 #[tauri::command]
 fn get_app_version(app: tauri::AppHandle) -> String {
@@ -23,6 +24,13 @@ async fn neuro(prompt: String) -> Result<String, String> {
     .map_err(|e| e.to_string())
 }
 
+#[tauri::command]
+async fn add_user(forename: String, email: String, password: String) -> Result<String, String> {
+    create_user(forename, email, password)
+    .await
+    .map_err(|e| e.to_string())
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     simple_logger::init().unwrap();
@@ -33,7 +41,8 @@ pub fn run() {
         .plugin(tauri_plugin_dialog::init())
         .invoke_handler(tauri::generate_handler![
             get_app_version, 
-            logger, 
+            logger,
+            add_user,
             files::read_file,
             files::save_file,
             files::delete_file,

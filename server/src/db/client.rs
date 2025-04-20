@@ -1,6 +1,6 @@
 use dotenvy::dotenv;
 use std::env;
-use redis::{AsyncCommands, Client, RedisResult};
+use redis::{Client, RedisResult};
 use redis::aio::MultiplexedConnection;
 
 fn get_url() -> String {
