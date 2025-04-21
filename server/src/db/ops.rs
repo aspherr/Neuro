@@ -63,6 +63,9 @@ pub async fn create_vault(name: String, user_id: String) -> RedisResult<String> 
     let vault_key: String = format!("vault:{}", id);
     let vault_set_key: String = format!("vault:{}", user_id);
 
+    let vault_name_key: String = format!("vault:{}", name);
+    let _: () = connection.set(vault_name_key, &vault_key).await?;
+
     let _: () = connection.hset_multiple(
         &vault_key, 
         &[("name", name), ("user_id", user_id)]
@@ -86,4 +89,28 @@ pub async fn get_vaults(user_id: String) -> RedisResult<Vec<String>> {
     }
 
     Ok(vault_names)
+}
+
+pub async fn get_vault_id(name: String) -> RedisResult<String> {
+    let mut connection = conn().await?;
+    
+    let vault_name_key: String = format!("vault:{}", name);
+    let vault_id: String = connection.get(&vault_name_key).await?;
+
+    Ok(vault_id)
+}
+
+
+pub async fn delete_vault(vault_id: String, vault_name: String, user_id: String) -> RedisResult<()> {
+    let mut connection = conn().await?;
+    
+    let _: () = connection.del(&vault_id).await?;
+
+    let name_key = format!("vault:{}", &vault_name);
+    let _: () = connection.del(name_key).await?;
+
+    let user_key = format!("vault:{}", &user_id);
+    let _: () = connection.srem(user_key,&vault_id).await?;
+
+    Ok(())
 }

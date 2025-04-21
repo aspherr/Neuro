@@ -8,7 +8,7 @@ use simple_logger;
 use llm::ai::call_neuro;
 use db::{client::{get_user_id, get_user_session_data, delete_session}, 
     models::User, 
-    ops::{create_user, create_vault, get_user, get_vaults}
+    ops::{create_user, create_vault, get_user, get_vaults,  get_vault_id, delete_vault}
 };
 use bcrypt::{hash, DEFAULT_COST};
 
@@ -74,6 +74,20 @@ async fn get_vault_names(id: String) -> Result<Vec<String>, String> {
 }
 
 #[command]
+async fn vault_id(name: String) -> Result<String, String> {
+    get_vault_id(name)
+        .await
+        .map_err(|e| e.to_string())
+}
+
+#[command]
+async fn drop_vault(vid: String, name: String, uid: String) -> Result<(), String> {
+    delete_vault(vid, name, uid)
+        .await
+        .map_err(|e| e.to_string())
+}
+
+#[command]
 async fn logout(token: String, id: String) -> Result<bool, String> {
     delete_session(token, id)
         .await
@@ -98,6 +112,8 @@ pub fn run() {
             get_id,
             add_vault,
             get_vault_names,
+            vault_id,
+            drop_vault,
             logout,
             files::read_file,
             files::save_file,

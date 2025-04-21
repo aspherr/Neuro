@@ -4,7 +4,8 @@
     import { invoke } from '@tauri-apps/api/core';
     import toast, {Toaster} from 'svelte-5-french-toast'
     import Button from '../../components/button.svelte';
-  import { goto } from '$app/navigation';
+    import { goto } from '$app/navigation';
+    import { ask } from '@tauri-apps/plugin-dialog';
 
     const win = Window.getCurrent();
     let session_token = localStorage.getItem("session_token");
@@ -38,6 +39,25 @@
       vaultName = "";
       createModal = false;
       loadVaults();
+    }
+
+
+    async function delete_vault(name: string) {
+        const confirmDelete = await ask('This action cannot be reverted. Are you sure?', {
+        title: 'Delete Note',
+        kind: 'warning',
+        });
+
+        if (confirmDelete) {
+          let vault_id = await invoke<string>('vault_id', { name: name });
+          await invoke<string>('drop_vault', { 
+            vid: vault_id,
+            name: name,
+            uid: user_id
+           }); 
+          toast.success('Vault Deleted!');
+          loadVaults();
+        }
     }
 
     async function logout() {
@@ -127,7 +147,8 @@
             <h2 class="font-bold text-lg">{vaultName}</h2>
           </button>
 
-          <button class="absolute top-3 right-2  opacity-0 group-hover:opacity-100" aria-label="delete-button">
+          <button class="absolute top-3 right-2  opacity-0 group-hover:opacity-100" aria-label="delete-button"
+            on:click={() => {delete_vault(vaultName)}}>
               <svg xmlns="http://www.w3.org/2000/svg"
               class="text-gray-400 hover:text-red-500"
               viewBox="0 0 24 24" 
