@@ -7,12 +7,13 @@
     import { ask } from '@tauri-apps/plugin-dialog'; 
     import { invoke } from '@tauri-apps/api/core';
     import toast, {Toaster} from 'svelte-5-french-toast'
+    import Button from '../../../components/button.svelte';
 
     const win = Window.getCurrent();
     let showModal = false;
     let notebookName = '';
 
-    export let data: {
+    export let data: {  
         vaultPath: string;
     };
     const decodedPath = data.vaultPath;
@@ -97,20 +98,19 @@
       <h1 class="text-3xl font-bold">Your Notebooks</h1>
 
       <div class="flex gap-4">
-        <div class="group flex items-center justify-center bg-zinc-800 border border-gray-500 w-9 h-9 p-1 rounded hover:bg-zinc-700 transition-all duration-400 ease-in-out transform antialiased z-10">
-          <button class="text-gray-400" aria-label="create-button" on:click={() => showModal = true}>
-              <svg xmlns="http://www.w3.org/2000/svg"
-              class="group-hover:text-orange-500 transistion-colors duration-200"
-              width="24" height="24"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              stroke-width="1.5">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
-              </svg>
-          </button>
-        </div>
+        <Button clickEvent={() => showModal = true}>
+          <svg xmlns="http://www.w3.org/2000/svg"
+          class="group-hover:text-orange-500 transistion-colors duration-200"
+          width="24" height="24"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+          </svg>
+        </Button>
       </div>
+    
     </div>
 
     {#if showModal}
@@ -180,18 +180,16 @@
   
     <!-- Footer with vault path -->
     <div class="flex items-center gap-2 px-6 py-4 border-t border-zinc-800 text-gray-500 text-sm">
-      <div class="group flex items-center justify-center bg-zinc-800 border border-gray-500 w-9 h-9 p-1 rounded hover:bg-zinc-700 transition-all duration-400 ease-in-out transform antialiased z-10">
-        <button class="text-gray-400" aria-label="toggle-button" on:click={goBack}>
-            <svg 
-            class="w-5 h-5 group-hover:text-orange-600 transform transition-transform duration-200 ease-in-out"
-            fill="none" 
-            stroke="currentColor" 
-            viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5l-7 7 7 7" />
-            </svg>
-        </button>
-      </div>
-    
+      <Button clickEvent={goBack}>
+        <svg 
+        class="w-5 h-5 group-hover:text-orange-600 transform transition-transform duration-200 ease-in-out"
+        fill="none" 
+        stroke="currentColor" 
+        viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5l-7 7 7 7" />
+        </svg>
+      </Button>
+
       <span class="pl-3">
         Vault location: <span class="text-gray-300">{decodedPath}</span>
       </span>
