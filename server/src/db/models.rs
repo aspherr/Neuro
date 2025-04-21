@@ -16,10 +16,6 @@ impl User {
         }
     }
     
-    pub fn get_forename(&self) -> &str {
-        &self.forename
-    }
-
     pub fn get_email(&self) -> &str {
         &self.email
     }

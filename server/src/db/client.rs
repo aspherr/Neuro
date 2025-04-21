@@ -22,7 +22,12 @@ pub async fn conn() -> redis::RedisResult<MultiplexedConnection> {
 
 pub async fn generate_session_token(mut connection: MultiplexedConnection, user_id: String) -> RedisResult<String> {
     let token = Uuid::new_v4().to_string();
+
     let token_key = format!("session:{}", token);
+    let user_key = format!("session:{}", &user_id);
+    
+    let _: () = connection.set(&user_key, &token).await?;
+    let _: () = connection.expire(&user_key, 28800).await?;
 
     let _: () = connection.hset_multiple(
         &token_key,
@@ -36,8 +41,9 @@ pub async fn generate_session_token(mut connection: MultiplexedConnection, user_
 pub async fn get_user_session_data(session_token: String) -> RedisResult<User> {
     let mut connection = conn().await?;
 
-    let user_id: Option<String> = connection.hget(&session_token, "user_id").await?;
+    let id: String = connection.hget(&session_token, "user_id").await?;
 
+    let user_id = format!("user:{}", id);
     let user_data: HashMap<String, String> = connection.hgetall(&user_id).await?;
 
     let account = User::assign(
@@ -47,4 +53,13 @@ pub async fn get_user_session_data(session_token: String) -> RedisResult<User> {
     );  
 
     Ok(account)
-}  
+}
+
+pub async fn get_user_id(email: String) -> RedisResult<String> {
+    let mut connection = conn().await?;
+
+    let email_key: String = format!("user:{}", email);
+    let user_id: String = connection.get(email_key).await?;
+    
+    Ok(user_id)
+}

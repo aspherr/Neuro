@@ -153,25 +153,25 @@
         {#each notebooks as notebook (notebook.name)}
         <div class="relative group">
           <button class="p-4 py-6 w-full min-h-[250px] bg-zinc-800 hover:bg-zinc-700 transition cursor-pointer border-l-5 border-orange-600 rounded"
-        on:click={() => openNotebook(notebook.name)}>
-          <h2 class="font-bold text-lg">{notebook.name}</h2>
-        </button>
+            on:click={() => openNotebook(notebook.name)}>
+            <h2 class="font-bold text-lg">{notebook.name}</h2>
+          </button>
 
-        <button class="absolute top-2 right-2  opacity-0 group-hover:opacity-100" aria-label="delete-button" on:click={() => {deleteNotebook(notebook.name)}}>
-            <svg xmlns="http://www.w3.org/2000/svg"
-            class="text-gray-400 hover:text-red-500"
-            viewBox="0 0 24 24" 
-            width="24" height="24" 
-            fill="none" stroke="currentColor" 
-            stroke-width="1.5" 
-            stroke-linecap="round" stroke-linejoin="round">
-                <path d="M3 6h18" />
-                <path d="M8 6V4h8v2" />
-                <path d="M19 6l-1 14H6L5 6" />
-                <line x1="10" y1="11" x2="10" y2="17" />
-                <line x1="14" y1="11" x2="14" y2="17" />
-            </svg>  
-        </button>
+          <button class="absolute top-2 right-2  opacity-0 group-hover:opacity-100" aria-label="delete-button" on:click={() => {deleteNotebook(notebook.name)}}>
+              <svg xmlns="http://www.w3.org/2000/svg"
+              class="text-gray-400 hover:text-red-500"
+              viewBox="0 0 24 24" 
+              width="24" height="24" 
+              fill="none" stroke="currentColor" 
+              stroke-width="1.5" 
+              stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 6h18" />
+                  <path d="M8 6V4h8v2" />
+                  <path d="M19 6l-1 14H6L5 6" />
+                  <line x1="10" y1="11" x2="10" y2="17" />
+                  <line x1="14" y1="11" x2="14" y2="17" />
+              </svg>  
+          </button>
         </div>
         {/each}
       </div>
