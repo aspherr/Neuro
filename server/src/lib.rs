@@ -2,30 +2,31 @@ mod files;
 mod llm;
 mod db;
 
+use tauri::command;
 use log::info;
 use simple_logger;
 use llm::ai::call_neuro;
-use db::ops::{create_user, get_user};
+use db::{models::User, ops::{create_user, get_user}, client::get_user_session_data};
 use bcrypt::{hash, DEFAULT_COST};
 
-#[tauri::command]
+#[command]
 fn get_app_version(app: tauri::AppHandle) -> String {
     app.package_info().version.to_string()
 }
 
-#[tauri::command]
+#[command]
 fn logger(message: String) {
     info!("Log: {}", message);
 }
 
-#[tauri::command]
+#[command]
 async fn neuro(prompt: String) -> Result<String, String> {
     call_neuro(&prompt)
     .await
     .map_err(|e| e.to_string())
 }
 
-#[tauri::command]
+#[command]
 async fn add_user(forename: String, email: String, password: String) -> Result<String, String> {
     let hashed_pass = hash(password, DEFAULT_COST).map_err(|e| e.to_string())?;
     create_user(forename, email, hashed_pass)
@@ -33,9 +34,17 @@ async fn add_user(forename: String, email: String, password: String) -> Result<S
     .map_err(|e| e.to_string())
 }
 
-#[tauri::command]
+#[command]
 async fn verify_user(email: String, password: String) -> Result<String, String> {
     get_user(email, password)
+        .await
+        .map_err(|e| e.to_string())
+}
+
+
+#[command]
+async fn get_user_data(session_token: String) -> Result<User, String> {
+    get_user_session_data(session_token)
         .await
         .map_err(|e| e.to_string())
 }
@@ -53,6 +62,7 @@ pub fn run() {
             logger,
             add_user,
             verify_user,
+            get_user_data,
             files::read_file,
             files::save_file,
             files::delete_file,

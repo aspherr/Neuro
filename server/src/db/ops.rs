@@ -40,7 +40,7 @@ pub async fn get_user(email: String, password: String) -> RedisResult<String> {
     let _ = &account.get_email();
 
     if account.verify_password(&password) {
-        let session = generate_session_token(connection, account.get_forename()).await?;
+        let session = generate_session_token(connection, user_id).await?;
         Ok(session)
         
     } else {
