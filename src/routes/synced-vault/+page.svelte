@@ -4,6 +4,7 @@
     import { invoke } from '@tauri-apps/api/core';
     import toast, {Toaster} from 'svelte-5-french-toast'
     import Button from '../../components/button.svelte';
+  import { goto } from '$app/navigation';
 
     const win = Window.getCurrent();
     let session_token = localStorage.getItem("session_token");
@@ -37,6 +38,20 @@
       vaultName = "";
       createModal = false;
       loadVaults();
+    }
+
+    async function logout() {
+      let logout = await invoke('logout', {
+        token: session_token,
+        id: user_id
+      });
+
+      if (logout) {
+        localStorage.removeItem("session_token");
+        await win.setSize(new LogicalSize(800, 650));
+        await win.center();
+        goto("/")
+      }
     }
 
     onMount(async() => {
@@ -134,7 +149,7 @@
     </div>
 
     <div class="flex items-center gap-2 px-6 py-4 border-t border-zinc-800 text-gray-500 text-sm">
-      <Button>
+      <Button clickEvent={logout}>
         <svg 
         class="w-5 h-5 group-hover:text-orange-600 transform transition-transform duration-200 ease-in-out"
         fill="none" 

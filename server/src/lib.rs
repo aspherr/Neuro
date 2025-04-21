@@ -6,7 +6,7 @@ use tauri::command;
 use log::info;
 use simple_logger;
 use llm::ai::call_neuro;
-use db::{client::{get_user_id, get_user_session_data}, 
+use db::{client::{get_user_id, get_user_session_data, delete_session}, 
     models::User, 
     ops::{create_user, create_vault, get_user, get_vaults}
 };
@@ -73,6 +73,14 @@ async fn get_vault_names(id: String) -> Result<Vec<String>, String> {
         .map_err(|e| e.to_string())
 }
 
+#[command]
+async fn logout(token: String, id: String) -> Result<bool, String> {
+    delete_session(token, id)
+        .await
+        .map_err(|e| e.to_string())
+}
+
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     simple_logger::init().unwrap();
@@ -90,6 +98,7 @@ pub fn run() {
             get_id,
             add_vault,
             get_vault_names,
+            logout,
             files::read_file,
             files::save_file,
             files::delete_file,

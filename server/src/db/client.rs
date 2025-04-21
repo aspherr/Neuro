@@ -63,3 +63,13 @@ pub async fn get_user_id(email: String) -> RedisResult<String> {
     
     Ok(user_id)
 }
+
+pub async fn delete_session(token: String, user_id: String) -> RedisResult<bool> {
+    let mut connection = conn().await?;
+
+    let user_key = format!("session:{}", &user_id);
+    let _: () = connection.del(&user_key).await?;
+    let _: () = connection.del(&token).await?;
+    
+    Ok(true)
+}   
