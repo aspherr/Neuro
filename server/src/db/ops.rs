@@ -37,10 +37,10 @@ pub async fn get_user(email: String, password: String) -> RedisResult<String> {
     );  
 
     // remove dead code warning (temp)
-    let _ = &account.email;
+    let _ = &account.get_email();
 
     if account.verify_password(&password) {
-        let session = generate_session_token(connection, account.forename).await?;
+        let session = generate_session_token(connection, account.get_forename()).await?;
         Ok(session)
         
     } else {

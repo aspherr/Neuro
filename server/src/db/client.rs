@@ -18,7 +18,7 @@ pub async fn conn() -> redis::RedisResult<MultiplexedConnection> {
     client.get_multiplexed_async_connection().await
 }
 
-pub async fn generate_session_token(mut connection: MultiplexedConnection, forename: String) -> RedisResult<String> {
+pub async fn generate_session_token(mut connection: MultiplexedConnection, forename: &str) -> RedisResult<String> {
     let token = Uuid::new_v4().to_string();
     let token_key = format!("session:{}", token);
 
@@ -29,4 +29,4 @@ pub async fn generate_session_token(mut connection: MultiplexedConnection, foren
     let _: () = connection.expire(&token_key, 28800).await?;
 
     Ok(token_key)
-}
+}   
