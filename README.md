@@ -4,6 +4,17 @@
 This project is my university dissertation—an AI-driven note-taking app built with Rust and Tauri.
 
 
+## File Structure
+
+The main 3 directories in this project are: `src/`, `server/src`, and `static/`
+
+- `src/` holds all the code for the frontend.
+- `server/src` holds all the code for the backend
+- `static/` holds any static assests like fonts and images
+
+The rest of the project files are config files and module plgins
+
+
 ## Environment Variables
 
 To run this project locally instead of deploying, you will need to add the following environment variables to your .env file
