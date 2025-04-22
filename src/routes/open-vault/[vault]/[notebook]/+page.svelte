@@ -17,6 +17,7 @@
     let toggleAIModal = false;
     let userPrompt: string = '';
     let currentNote: string = '';
+    let activeNote: string = '';
     let currentRemoteNote: string = '';
     let newFileName: string = '';
     let markdown: string = '';
@@ -87,6 +88,11 @@
 
     // Opens either a local or remote note
     async function openNote(file: string | undefined) {
+
+        if (file) {
+            activeNote = file;
+        }
+        
         // remote note
         if (session_token && session_token !== "null" && session_token !== "undefined") {
             if (file) {
@@ -231,7 +237,7 @@
         )
 
         if (firsFilePath) {
-            openNote(firsFilePath);
+            activeNote = firsFilePath.split('/').pop() ?? '';
         }
     });
 
@@ -328,7 +334,7 @@
                             on:click={() => openNote(note.name)}> <!-- Open up text editor for that note -->
                                 <svg
                                 class="w-4 h-4 text-gray-500"
-                                class:text-orange-600={note.name == currentNote.split("/").pop()}
+                                class:text-orange-600={note.name === activeNote}
                                 fill="none"
                                 stroke="currentColor"
                                 stroke-width="1"
