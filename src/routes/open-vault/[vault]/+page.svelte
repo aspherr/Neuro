@@ -101,7 +101,13 @@
     async function goBack() {
         await win.setSize(new LogicalSize(800, 650));
         await win.center();
-        goto("/");
+        
+        if (session_token && session_token !== "null" && session_token !== "undefined") {
+            goto('../synced-vault')
+        
+        } else {
+            goto('./');
+        }
     }
 
     // Opens notebook
