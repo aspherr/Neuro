@@ -25,6 +25,15 @@
                     .filter(word => word && !word.startsWith('#'))
                     .filter(Boolean).length;
     $: content = marked(markdown);
+    $: session_token = localStorage.getItem("session_token");
+
+    interface User {
+      forename: string;
+      email: string;
+    }
+    let account: User;
+    let user_id = "";
+    let notebook_id = "";
     
     export let data: {
         path: string;
@@ -39,9 +48,23 @@
         name?: string;
         children?: NoteEntry[];
     };
-    let notes: NoteEntry[] = [];
+    let localNotes: NoteEntry[] = [];
+
+    type RemoteNoteEntry = {
+        name: string;
+    };
+
+    let remoteNotes: RemoteNoteEntry[] = [];
+
+    $: notes = session_token ? remoteNotes : localNotes;
 
     async function loadNotes() {
+        if (session_token && session_token !== "null" && session_token !== "undefined") {
+            remoteNotes = (await invoke<string[]>('get_note_names', { id: notebook_id }))
+            .map(name => ({ name }));
+            return;
+        }
+
         const result = await readDir(`${notebookPath}/${notebookName}`);
         notes = (result as unknown as NoteEntry[])
         .filter(entry => entry.name)
@@ -80,14 +103,23 @@
     }
 
     async function createNote(file: string | undefined) {
-        let filePath = `${notebookPath}/${notebookName}/${file}.md`;
-        await invoke<string>('create_file', { path: filePath });
+        if (session_token && session_token !== "null" && session_token !== "undefined") {
+            await invoke('add_note', { 
+                name: `${newFileName}.md`,
+                nid: notebook_id
+             });
+        
+        } else {
+            let filePath = `${notebookPath}/${notebookName}/${file}.md`;
+            await invoke<string>('create_file', { path: filePath });
+        }
+
         
         toggleCreateModal = false;
         newFileName = '';
 
         loadNotes();
-        openNote(filePath);
+        
         toggleMarkdown = true
         toast.success('File Created!')
     }
@@ -128,6 +160,12 @@
     }
 
     onMount(async() => {
+        if (session_token && session_token !== "null" && session_token !== "undefined") {
+            account = await invoke('get_user_data', { sessionToken: session_token });
+            user_id = await invoke('get_id', {email: account.email});
+            notebook_id = await invoke('notebook_id', {name: notebookName})
+        }
+
         loadNotes();
         let firsFilePath = await invoke<string>('get_first_file', {
             path: `${notebookPath}/${notebookName}`}

@@ -13,11 +13,14 @@
     let showModal = false;
     let notebookName = '';
     $: session_token = localStorage.getItem("session_token");
+    let vault_id = '';
+    
 
     export let data: {  
         vaultPath: string;
     };
     const decodedPath = data.vaultPath;
+    let vault_name = decodedPath.split('/').pop();
   
     type NotebookEntry = {
         path: string;
@@ -51,7 +54,7 @@
       if (session_token && session_token !== "null" && session_token !== "undefined") {
         await invoke('add_notebook', {
           name: notebookName,
-          id: user_id
+          id: vault_id
         })
 
       } else {
@@ -69,7 +72,7 @@
 
     async function loadNotebooks() {
       if (session_token && session_token !== "null" && session_token !== "undefined") {
-        remoteNotebooks = (await invoke<string[]>('get_notebook_names', { id: user_id }))
+        remoteNotebooks = (await invoke<string[]>('get_notebook_names', { id: vault_id }))
         .map(name => ({ name }));
         return;
       }
@@ -111,7 +114,7 @@
           await invoke('drop_notebook', {
             nid: notebook_id,
             name: notebook,
-            uid: user_id
+            vid: vault_id
           })
         
         } else {
@@ -130,6 +133,7 @@
         if (session_token && session_token !== "null" && session_token !== "undefined") {
         account = await invoke('get_user_data', { sessionToken: session_token });
         user_id = await invoke('get_id', {email: account.email});
+        vault_id = await invoke('vault_id', {name: vault_name})
         }
         await loadNotebooks();
     });

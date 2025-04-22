@@ -64,14 +64,14 @@ pub async fn create_vault(name: String, user_id: String) -> RedisResult<String> 
     let vault_set_key: String = format!("vault:{}", user_id);
 
     let vault_name_key: String = format!("vault:{}", name);
-    let _: () = connection.set(vault_name_key, &vault_key).await?;
+    let _: () = connection.set(vault_name_key, &id).await?;
 
     let _: () = connection.hset_multiple(
         &vault_key, 
         &[("name", name), ("user_id", user_id)]
     ).await?;
 
-    let _: () = connection.sadd(&vault_set_key, &vault_key).await?;
+    let _: () = connection.sadd(&vault_set_key, &id).await?;
 
     Ok(vault_key)
 }
@@ -84,7 +84,8 @@ pub async fn get_vaults(user_id: String) -> RedisResult<Vec<String>> {
 
     let mut vault_names: Vec<String> = Vec::new();
     for id in vault_keys {
-        let name = connection.hget(&id, "name").await?;
+        let id_key = format!("vault:{}", id);
+        let name = connection.hget(id_key, "name").await?;
         vault_names.push(name);
     }
 
@@ -104,46 +105,48 @@ pub async fn get_vault_id(name: String) -> RedisResult<String> {
 pub async fn delete_vault(vault_id: String, vault_name: String, user_id: String) -> RedisResult<()> {
     let mut connection = conn().await?;
     
-    let _: () = connection.del(&vault_id).await?;
+    let hash_key = format!("vault:{}", &vault_id);
+    let _: () = connection.del(&hash_key).await?;
 
-    let name_key = format!("vault:{}", &vault_name);
-    let _: () = connection.del(name_key).await?;
+    let string_key = format!("vault:{}", &vault_name);
+    let _: () = connection.del(string_key).await?;
 
-    let user_key = format!("vault:{}", &user_id);
-    let _: () = connection.srem(user_key,&vault_id).await?;
+    let set_key = format!("vault:{}", &user_id);
+    let _: () = connection.srem(set_key,&vault_id).await?;
 
     Ok(())
 }
 
-pub async fn create_notebook(name: String, user_id: String) -> RedisResult<String> {
+pub async fn create_notebook(name: String, vault_id: String) -> RedisResult<String> {
     let mut connection = conn().await?;
     
     let id: String = Uuid::new_v4().to_string();
-    let notebook_key: String = format!("notebook:{}", id);
-    let notebook_set_key: String = format!("notebook:{}", user_id);
+    let notebook_id: String = format!("notebook:{}", id);
+    let notebook_set_key: String = format!("notebook:{}", vault_id);
 
     let notebook_name_key: String = format!("notebook:{}", name);
-    let _: () = connection.set(notebook_name_key, &notebook_key).await?;
+    let _: () = connection.set(&notebook_name_key, &id).await?;
 
     let _: () = connection.hset_multiple(
-        &notebook_key, 
-        &[("name", name), ("user_id", user_id)]
+        &notebook_id, 
+        &[("name", name), ("vault_id", vault_id)]
     ).await?;
 
-    let _: () = connection.sadd(&notebook_set_key, &notebook_key).await?;
+    let _: () = connection.sadd(&notebook_set_key, &id).await?;
 
-    Ok(notebook_key)
+    Ok(notebook_id)
 }
 
-pub async fn get_notebooks(user_id: String) -> RedisResult<Vec<String>> {
+pub async fn get_notebooks(vault_id: String) -> RedisResult<Vec<String>> {
     let mut connection = conn().await?;
     
-    let notebook_set_key: String = format!("notebook:{}", user_id);
+    let notebook_set_key: String = format!("notebook:{}", vault_id);
     let notebook_keys: Vec<String> = connection.smembers(&notebook_set_key).await?;
 
     let mut notebook_names: Vec<String> = Vec::new();
     for id in notebook_keys {
-        let name = connection.hget(&id, "name").await?;
+        let id_key = format!("notebook:{}", id);
+        let name = connection.hget(id_key, "name").await?;
         notebook_names.push(name);
     }
 
@@ -159,16 +162,53 @@ pub async fn get_notebook_id(name: String) -> RedisResult<String> {
     Ok(notebook_id)
 }
 
-pub async fn delete_notebook(notebook_id: String, notebook_name: String, user_id: String) -> RedisResult<()> {
+pub async fn delete_notebook(notebook_id: String, notebook_name: String, vault_id: String) -> RedisResult<()> {
     let mut connection = conn().await?;
+
+    let hash_key = format!("notebook:{}", &notebook_id);
+    let _: () = connection.del(hash_key).await?;
+
+    let string_key = format!("notebook:{}", &notebook_name);
+    let _: () = connection.del(string_key).await?;
     
-    let _: () = connection.del(&notebook_id).await?;
-
-    let name_key = format!("notebook:{}", &notebook_name);
-    let _: () = connection.del(name_key).await?;
-
-    let user_key = format!("notebook:{}", &user_id);
-    let _: () = connection.srem(user_key,&notebook_id).await?;
+    let set_key = format!("notebook:{}", &vault_id);
+    let _: () = connection.srem(set_key,&notebook_id).await?;
 
     Ok(())
+}
+
+pub async fn create_note(name: String, notebook_id: String) -> RedisResult<String> {
+    let mut connection = conn().await?;
+    
+    let id: String = Uuid::new_v4().to_string();
+    let note_key: String = format!("note:{}", id);
+    let note_set_key: String = format!("note:{}", notebook_id);
+
+    let note_name_key: String = format!("note:{}", name);
+    let _: () = connection.set(note_name_key, &id).await?;
+
+    let _: () = connection.hset_multiple(
+        &note_key, 
+        &[("name", name), ("notebook_id", notebook_id), ("content", "".to_string())]
+    ).await?;
+
+    let _: () = connection.sadd(note_set_key, &id).await?;
+
+    Ok(note_key)
+}
+
+pub async fn get_notes(notebook_id: String) -> RedisResult<Vec<String>> {
+    let mut connection = conn().await?;
+    
+    let notebook_set_key: String = format!("note:{}", notebook_id);
+    let notebook_keys: Vec<String> = connection.smembers(&notebook_set_key).await?;
+
+    let mut notebook_names: Vec<String> = Vec::new();
+    for id in notebook_keys {
+        let id_key = format!("note:{}", id);
+        let name = connection.hget(id_key, "name").await?;
+        notebook_names.push(name);
+    }
+
+    Ok(notebook_names)
 }
