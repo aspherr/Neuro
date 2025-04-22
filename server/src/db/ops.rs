@@ -212,3 +212,21 @@ pub async fn get_notes(notebook_id: String) -> RedisResult<Vec<String>> {
 
     Ok(notebook_names)
 }
+
+pub async fn get_note_id(name: String) -> RedisResult<String> {
+    let mut connection = conn().await?;
+    
+    let notebook_name_key: String = format!("note:{}", name);
+    let notebook_id: String = connection.get(&notebook_name_key).await?;
+
+    Ok(notebook_id)
+}
+
+pub async fn read_note(id: String) -> RedisResult<String> {
+    let mut connection = conn().await?;
+    
+    let notebook_name_key: String = format!("note:{}", id);
+    let content: String = connection.hget(&notebook_name_key, "content").await?;
+
+    Ok(content)
+}
