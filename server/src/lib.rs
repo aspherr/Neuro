@@ -8,7 +8,7 @@ use simple_logger;
 use llm::ai::call_neuro;
 use db::{client::{get_user_id, get_user_session_data, delete_session}, 
     models::User, 
-    ops::{create_user, create_vault, get_user, get_vaults,  get_vault_id, delete_vault, create_notebook, get_notebooks, get_notebook_id, delete_notebook, create_note, get_notes, get_note_id, read_note, save_note}
+    ops::{create_user, create_vault, get_user, get_vaults,  get_vault_id, delete_vault, create_notebook, get_notebooks, get_notebook_id, delete_notebook, create_note, get_notes, get_note_id, read_note, save_note, delete_note}
 };
 use bcrypt::{hash, DEFAULT_COST};
 
@@ -157,6 +157,13 @@ async fn save_remote_note(id: String, content: String) -> Result<String, String>
         .map_err(|e| e.to_string())
 }
 
+#[command]
+async fn delete_remote_note(id: String, name: String, nid: String) -> Result<(), String> {
+    delete_note(id, name, nid)
+        .await
+        .map_err(|e| e.to_string())
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     simple_logger::init().unwrap();
@@ -186,6 +193,7 @@ pub fn run() {
             note_id,
             read_remote_note,
             save_remote_note,
+            delete_remote_note,
             files::read_file,
             files::save_file,
             files::delete_file,

@@ -239,3 +239,18 @@ pub async fn save_note(id: String, content: String) -> RedisResult<String> {
 
     Ok(content)
 }
+
+pub async fn delete_note(note_id: String, note_name: String, notebook_id: String) -> RedisResult<()> {
+    let mut connection = conn().await?;
+    
+    let hash_key = format!("note:{}", &note_id);
+    let _: () = connection.del(hash_key).await?;
+
+    let string_key = format!("note:{}", &note_name);
+    let _: () = connection.del(string_key).await?;
+    
+    let set_key = format!("note:{}", &notebook_id);
+    let _: () = connection.srem(set_key,&note_id).await?;
+
+    Ok(())
+}

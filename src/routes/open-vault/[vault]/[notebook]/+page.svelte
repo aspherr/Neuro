@@ -113,10 +113,21 @@
         });
 
         if (confirmDelete) {
-            await invoke<string>('delete_file', { path: currentNote }); 
+            if (session_token && session_token !== "null" && session_token !== "undefined") {
+                let note_id = await invoke("note_id", {name: currentRemoteNote})
+                let notebook_id = await invoke("notebook_id", {name: notebookName })
+                await invoke('delete_remote_note', {
+                    id:  note_id,
+                    name: currentRemoteNote,
+                    nid: notebook_id
+                })
+
+            } else {
+                await invoke<string>('delete_file', { path: currentNote }); 
+            }
             toast.success('File Deleted!')
         }
-        loadNotes()
+        loadNotes();
     }
 
     async function createNote(file: string | undefined) {
