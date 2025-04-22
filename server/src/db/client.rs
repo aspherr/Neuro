@@ -1,5 +1,4 @@
-use dotenvy::dotenv;
-use std::env;
+use dotenvy_macro::dotenv;
 use redis::{AsyncCommands, Client, RedisResult};
 use redis::aio::MultiplexedConnection;
 use uuid::Uuid;
@@ -8,8 +7,7 @@ use std::collections::HashMap;
 
 // grab DB url from .env file
 fn get_url() -> String {
-    dotenv().ok();
-    env::var("DATABASE_URL").expect("Missing URL for Redis Connection")
+    dotenv!("DATABASE_URL").to_string()
 }
 
 // generates a new (cloneable) redis client

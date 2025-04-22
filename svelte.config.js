@@ -8,7 +8,13 @@ import { vitePreprocess } from "@sveltejs/vite-plugin-svelte";
 const config = {
   preprocess: vitePreprocess(),
   kit: {
-    adapter: adapter(),
+    adapter: adapter({
+      fallback: 'index.html', // Serve index.html for all routes (SPA mode)
+      strict: false           // Ignore missing dynamic routes during build
+    }),
+    prerender: {
+      entries: [] // Don't try to prerender dynamic routes like [vault]
+    }
   },
 };
 

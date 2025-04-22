@@ -186,9 +186,17 @@ async fn delete_remote_note(id: String, name: String, nid: String) -> Result<(),
         .map_err(|e| e.to_string())
 }
 
+#[command]
+fn get_environment_variable (name: &str) -> String {
+  std::env::var(name).unwrap_or_else(|_| "".to_string())
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
+    dotenvy::dotenv().ok(); 
     simple_logger::init().unwrap();
+
+    println!("{}", get_environment_variable("DATABASE_URL"));
 
     // Tauri API method calls
     tauri::Builder::default()
@@ -208,7 +216,7 @@ pub fn run() {
             logout,
             add_notebook,
             get_notebook_names,
-            notebook_id,
+            notebook_id,    
             drop_notebook,
             add_note,
             get_note_names,

@@ -1,6 +1,5 @@
 use reqwest::Client;
-use dotenvy::dotenv;
-use std::env;
+use dotenvy_macro::dotenv;
 
 // Generate a client
 fn gen_client() -> Client {
@@ -9,8 +8,7 @@ fn gen_client() -> Client {
 
 // Grabs OpenAI API key from .env file
 fn get_openai_key() -> String {
-    dotenv().ok();
-    env::var("OPENAI_API_KEY").expect("Missing OPENAI_API_KEY")
+    dotenv!("OPENAI_API_KEY").to_string()
 }
 
 // API call to GPT-4o-mini model

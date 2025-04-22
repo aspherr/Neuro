@@ -2,6 +2,6 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 fn main() {
-    // call to tauri and rust functions
+    // call to tauri and rust functions   
     neuro_lib::run()
 }
