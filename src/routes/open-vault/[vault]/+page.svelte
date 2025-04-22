@@ -106,7 +106,7 @@
             goto('../synced-vault')
         
         } else {
-            goto('./');
+            goto('/');
         }
     }
 
