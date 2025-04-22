@@ -17,6 +17,7 @@
     let toggleAIModal = false;
     let userPrompt: string = '';
     let currentNote: string = '';
+    let currentRemoteNote: string = '';
     let newFileName: string = '';
     let markdown: string = '';
     $: wordCount = markdown
@@ -76,8 +77,12 @@
 
     async function openNote(file: string | undefined) {
         if (session_token && session_token !== "null" && session_token !== "undefined") {
+            if (file) {
+                currentRemoteNote = file;
+            }
             let note_id = await invoke("note_id", {name: file})
             markdown = await invoke<string>('read_remote_note', { id: note_id });
+            
 
         } else {
             currentNote = `${notebookPath}/${notebookName}/${file}`;
@@ -89,7 +94,15 @@
     }
 
     async function saveNote(content: string | undefined) {
-        await invoke<string>('save_file', { path: currentNote, data: content});
+        if (session_token && session_token !== "null" && session_token !== "undefined") {
+            let note_id = await invoke("note_id", {name: currentRemoteNote})
+            await invoke('save_remote_note', {
+                id:  note_id,
+                content: content
+            })
+        } else {
+            await invoke<string>('save_file', { path: currentNote, data: content});
+        }
         toast.success('File Saved!') ;
     }
 

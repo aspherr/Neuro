@@ -230,3 +230,12 @@ pub async fn read_note(id: String) -> RedisResult<String> {
 
     Ok(content)
 }
+
+pub async fn save_note(id: String, content: String) -> RedisResult<String> {
+    let mut connection = conn().await?;
+    
+    let notebook_name_key: String = format!("note:{}", id);
+    let content: String = connection.hset(&notebook_name_key, "content", content).await?;
+
+    Ok(content)
+}
