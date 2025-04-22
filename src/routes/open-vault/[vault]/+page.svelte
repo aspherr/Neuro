@@ -106,11 +106,22 @@
         });
       
       if (confirmDelete) {
-        let notebookPath = `${decodedPath}/${notebook}`;
-        await invoke<string>('delete_folder', { path: notebookPath });
+        if (session_token && session_token !== "null" && session_token !== "undefined") {
+          let notebook_id = await invoke<string>('notebook_id', { name: notebook });
+          await invoke('drop_notebook', {
+            nid: notebook_id,
+            name: notebook,
+            uid: user_id
+          })
+        
+        } else {
+          let notebookPath = `${decodedPath}/${notebook}`;
+          await invoke<string>('delete_folder', { path: notebookPath });
+        }
+        
         toast.success('Notebook Deleted!')
       }
-      loadNotebooks()
+      loadNotebooks();
     }
 
     onMount(async() => {

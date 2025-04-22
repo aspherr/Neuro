@@ -149,3 +149,26 @@ pub async fn get_notebooks(user_id: String) -> RedisResult<Vec<String>> {
 
     Ok(notebook_names)
 }
+
+pub async fn get_notebook_id(name: String) -> RedisResult<String> {
+    let mut connection = conn().await?;
+    
+    let notebook_name_key: String = format!("notebook:{}", name);
+    let notebook_id: String = connection.get(&notebook_name_key).await?;
+
+    Ok(notebook_id)
+}
+
+pub async fn delete_notebook(notebook_id: String, notebook_name: String, user_id: String) -> RedisResult<()> {
+    let mut connection = conn().await?;
+    
+    let _: () = connection.del(&notebook_id).await?;
+
+    let name_key = format!("notebook:{}", &notebook_name);
+    let _: () = connection.del(name_key).await?;
+
+    let user_key = format!("notebook:{}", &user_id);
+    let _: () = connection.srem(user_key,&notebook_id).await?;
+
+    Ok(())
+}
