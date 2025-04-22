@@ -43,6 +43,7 @@
       vaultName = "";
       createModal = false;
       loadVaults();
+      toast.success('Vault Created!');
     }
 
     // redirects to dynamic vault page
