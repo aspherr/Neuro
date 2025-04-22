@@ -1,7 +1,44 @@
-# Tauri + SvelteKit + TypeScript
 
-This template should help get you started developing with Tauri, SvelteKit and TypeScript in Vite.
+# Neuro Quick Start Guide
 
-## Recommended IDE Setup
+This project is my university dissertation—an AI-driven note-taking app built with Rust and Tauri.
 
-[VS Code](https://code.visualstudio.com/) + [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer).
+
+## Environment Variables
+
+To run this project locally instead of deploying, you will need to add the following environment variables to your .env file
+
+`OPENAI_API_KEY` for GPT LLM Model
+
+`DATABASE_URL` for Redis DB
+
+
+## Running
+
+This project was built in Tauri and so will require Rust, Tauri and npm installed 
+
+Before running the project it is recommended you clean and rebuild the cargo /bin directory
+
+```bash
+  cd server/
+  cargo clean && cargo build
+```
+
+Then return to the root directory and run the following
+```bash
+  npm run tauri dev
+```
+
+## Deployment
+
+To deploy this project run
+
+```bash
+  npm run tauri build
+```
+
+This will install the executable in the server/target/release/ directory
+## Authors
+
+- [@aspherr](https://github.com/aspherr)
+
