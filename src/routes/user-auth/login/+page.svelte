@@ -3,6 +3,7 @@
     import { invoke } from '@tauri-apps/api/core';
     import { fade, slide } from "svelte/transition";
     import { goto } from "$app/navigation";
+    import toast, { Toaster } from 'svelte-5-french-toast';
   
     let appVersion = 'loading...';
     let email = "";
@@ -27,15 +28,23 @@
     // Authenticates user login 
     async function verify_login() {
         // Query user credentials
-        const auth = await invoke<string>('verify_user', {
-            email: email,
-            password: password
-        });
+        if (email.length === 0 || password.length === 0) {
+            toast.error("Please fill in all fields")
+            return;
+        }
 
-        // Create session if user exits
-        if (auth) {
+        try {
+            const auth = await invoke<string>('verify_user', {
+                email,
+                password
+            });
+
+            // store new session token upon successful login
             localStorage.setItem('session_token', auth);
-            goto("../../synced-vault")
+            goto("../../synced-vault");
+
+        } catch (error) {
+            toast.error("Incorrect credentials");
         }
     }
 
@@ -46,6 +55,8 @@
   </script>
   
   <main class="h-screen w-screen bg-zinc-900 text-white flex flex-col items-center justify-center space-y-6"> 
+    <Toaster/>
+
      <!-- Title -->   
     <div out:fade={{ duration: 150 }} class="text-center">
         <h1 class="Satoshi font-bold text-5xl -mt-7">Neuro</h1>
