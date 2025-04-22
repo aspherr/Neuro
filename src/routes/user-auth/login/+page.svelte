@@ -9,51 +9,63 @@
     let password = "";
     let passwordVisbility = true;
 
+    // On initial page load
     onMount(async() => {
         appVersion = await invoke ('get_app_version');
     });
 
+    // Redirect back to index page
     function goBack() {
         goto("../");
     }
 
+    // Toggles password visibility
     function toggleVisibility() {
         passwordVisbility = !passwordVisbility
     }
 
+    // Authenticates user login 
     async function verify_login() {
+        // Query user credentials
         const auth = await invoke<string>('verify_user', {
             email: email,
             password: password
         });
 
+        // Create session if user exits
         if (auth) {
             localStorage.setItem('session_token', auth);
             goto("../../synced-vault")
         }
     }
 
+    // Redirects to the register page
     function register() {
         goto("./register");
     }
   </script>
   
-  <main class="h-screen w-screen bg-zinc-900 text-white flex flex-col items-center justify-center space-y-6">    
+  <main class="h-screen w-screen bg-zinc-900 text-white flex flex-col items-center justify-center space-y-6"> 
+     <!-- Title -->   
     <div out:fade={{ duration: 150 }} class="text-center">
         <h1 class="Satoshi font-bold text-5xl -mt-7">Neuro</h1>
         <p class="Satoshi text-base text-gray-400">Version: {appVersion}</p>
     </div>
 
+
     <div in:slide out:fade={{ duration: 150 }} class="w-full max-w-lg p-6">
+         <!-- Back button to redirect back to index page -->
         <button class="text-gray-400 hover:text-white text-lg flex items-center space-x-2 mb-4" on:click={goBack}>
             ← <span class="pl-2"> Back</span>
         </button>
 
         <h2 class="text-xl font-bold mb-4">Login to Neuro Sync</h2>
 
+         <!-- Email input -->
         <input type="text" bind:value={email} placeholder="Enter your email"
         class="w-full bg-zinc-700 text-white p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-600 mb-4"/>
 
+         <!-- Password input -->
         <div class="relative w-full mb-4">
             <input type={passwordVisbility ? "password" : "text"} bind:value={password} placeholder="Enter your password"
             class="w-full bg-zinc-700 text-white p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-600"/>
@@ -75,11 +87,13 @@
             </button>
         </div>
 
+         <!-- Submit login form button -->
         <button class="w-full bg-orange-700 text-white font-semibold py-3 rounded-md hover:bg-orange-600 transition"
         on:click={verify_login}>
             Login
         </button>
 
+        <!-- Redirect link to regiister for an account -->
         <div class="flex justify-center text-center pt-6 ">
             <p class="text-sm text-gray-400 mb-4">Dont have an account? 
                 <button class="cursor-pointer hover:underline hover:text-orange-600 transistion-colors duration-200" on:click={register}>Sign up</button>

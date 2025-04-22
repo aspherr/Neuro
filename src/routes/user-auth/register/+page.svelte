@@ -18,16 +18,19 @@
     // taken from: https://uibakery.io/regex-library/email
     const emailRegex = /^\S+@\S+\.\S+$/;
     let validEmail = false;
-        
+
+    // On initial page load
     onMount(async() => {
         appVersion = await invoke ('get_app_version');
     });
 
+    // checks to see if user inputted email conforms to RegEx
     function validateEmail() {
         // true only if email conforms to regex condition
         validEmail = emailRegex.test(email);
     }
 
+    // toggles password visbibility
     function toggleVisibility(visbility: 'main-pass' | 'confirm-pass') {
         if (visbility === 'main-pass') {
             passwordVisbility = !passwordVisbility;
@@ -37,6 +40,7 @@
         }
     }
     
+    // Checks form conditions then creates the account
     async function create_account() {
         if (forename.length == 0) {
             toast.error("Please enter your forename");
@@ -55,17 +59,20 @@
             return;
         }
 
+        // If no errors, send the create query
         await invoke('add_user', {
             forename: forename,
             email: email,
             password: confirmPass
         });
         toast.success("Account Created");
+        // Small delay to show toast notif
         setTimeout(() => {
             login();
-        }, 650);
+        }, 500);
     }
 
+    // Redirects the user back to the login page
     function login() {
         goto("./login");
     }   
@@ -74,6 +81,7 @@
   <main class="h-screen w-screen bg-zinc-900 text-white flex flex-col items-center justify-center space-y-6">
     <Toaster/>
 
+     <!-- Title -->
     <div out:fade={{ duration: 150 }} class="text-center">
         <h1 class="Satoshi font-bold text-5xl mt-7">Neuro</h1>
         <p class="Satoshi text-base text-gray-400">Version: {appVersion}</p>
@@ -82,9 +90,11 @@
     <div in:slide out:fade={{ duration: 150 }} class="w-full max-w-lg p-6">
         <h2 class="text-xl font-bold mb-4">Create a Neuro Sync account</h2>
 
+         <!-- Forename input -->
         <input type="text" bind:value={forename} placeholder="Enter your forename"
         class="w-full bg-zinc-700 text-white p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-600 mb-4"/>
 
+         <!-- Email input -->
         <div class="relative w-full mb-4">
             <input type="text" bind:value={email} placeholder="Enter your email"
             class="w-full bg-zinc-700 text-white p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-600"
@@ -97,6 +107,7 @@
             </span>
         </div>
 
+         <!-- Password input -->
         <div class="relative w-full mb-4">
             <input type={passwordVisbility ? "text" : "password"} bind:value={password} placeholder="Enter your password"
             class="w-full bg-zinc-700 text-white p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-600"/>
@@ -118,6 +129,7 @@
             </button>
         </div>
 
+         <!-- Confirm password input -->
         <div class="relative w-full mb-4">
             <input type={confirmPasswordVisbility ? "text" : "password"} bind:value={confirmPass} placeholder="Confirm your password"
             class="w-full bg-zinc-700 text-white p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-600"/>
@@ -139,11 +151,13 @@
             </button>
         </div>
 
+         <!-- Button to submit the form -->
         <button class="w-full bg-orange-700 text-white font-semibold py-3 mt-3 rounded-md hover:bg-orange-600 transition"
         on:click={create_account}>
             Create Account
         </button>
 
+         <!-- Redirect link to sign in with account -->
         <div class="flex justify-center text-center pt-6 ">
             <p class="text-sm text-gray-400 mb-4">Have have an account? 
                 <button class="cursor-pointer hover:underline hover:text-orange-600 transistion-colors duration-200" on:click={login}>Login</button>

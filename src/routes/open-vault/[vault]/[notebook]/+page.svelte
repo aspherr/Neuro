@@ -20,14 +20,18 @@
     let currentRemoteNote: string = '';
     let newFileName: string = '';
     let markdown: string = '';
+    
+    // counts words in markdown string
     $: wordCount = markdown
                     .trim()
                     .split(/\s+/)
                     .filter(word => word && !word.startsWith('#'))
                     .filter(Boolean).length;
-    $: content = marked(markdown);
+    
+    $: content = marked(markdown); // converts markdown to html
     $: session_token = localStorage.getItem("session_token");
 
+    // User structure
     interface User {
       forename: string;
       email: string;
@@ -36,6 +40,7 @@
     let user_id = "";
     let notebook_id = "";
     
+    // exported data for pathing
     export let data: {
         path: string;
         name: string;
@@ -44,6 +49,7 @@
     const notebookPath = data.path;
     const notebookName = data.name;
 
+    // Local note structure 
     type NoteEntry = {
         path: string;
         name?: string;
@@ -51,6 +57,7 @@
     };
     let localNotes: NoteEntry[] = [];
 
+    // Remote note structure
     type RemoteNoteEntry = {
         name: string;
     };
@@ -59,13 +66,16 @@
 
     $: notes = session_token ? remoteNotes : localNotes;
 
+    // Loads either local or remote notes
     async function loadNotes() {
+        // remote notes
         if (session_token && session_token !== "null" && session_token !== "undefined") {
             remoteNotes = (await invoke<string[]>('get_note_names', { id: notebook_id }))
             .map(name => ({ name }));
             return;
         }
 
+        // local notes
         const result = await readDir(`${notebookPath}/${notebookName}`);
         notes = (result as unknown as NoteEntry[])
         .filter(entry => entry.name)
@@ -75,7 +85,9 @@
         }));
     }
 
+    // Opens either a local or remote note
     async function openNote(file: string | undefined) {
+        // remote note
         if (session_token && session_token !== "null" && session_token !== "undefined") {
             if (file) {
                 currentRemoteNote = file;
@@ -83,7 +95,7 @@
             let note_id = await invoke("note_id", {name: file})
             markdown = await invoke<string>('read_remote_note', { id: note_id });
             
-
+        // local note
         } else {
             currentNote = `${notebookPath}/${notebookName}/${file}`;
             markdown = await invoke<string>('read_file', { path: currentNote });
@@ -93,26 +105,33 @@
         toggleNote = !toggleNote;
     }
 
+    // Saves either a local or remote note
     async function saveNote(content: string | undefined) {
+        // remote note
         if (session_token && session_token !== "null" && session_token !== "undefined") {
             let note_id = await invoke("note_id", {name: currentRemoteNote})
             await invoke('save_remote_note', {
                 id:  note_id,
                 content: content
             })
+
+        // local note
         } else {
             await invoke<string>('save_file', { path: currentNote, data: content});
         }
         toast.success('File Saved!') ;
     }
 
+    // Deletes either a local or remote note
     async function deleteNote() {
+        // Confirm with user before deleting
         const confirmDelete = await ask('This action cannot be reverted. Are you sure?', {
         title: 'Delete Note',
         kind: 'warning',
         });
 
         if (confirmDelete) {
+            // remote deletion
             if (session_token && session_token !== "null" && session_token !== "undefined") {
                 let note_id = await invoke("note_id", {name: currentRemoteNote})
                 let notebook_id = await invoke("notebook_id", {name: notebookName })
@@ -121,7 +140,8 @@
                     name: currentRemoteNote,
                     nid: notebook_id
                 })
-
+            
+            // local deletion
             } else {
                 await invoke<string>('delete_file', { path: currentNote }); 
             }
@@ -130,13 +150,16 @@
         loadNotes();
     }
 
+    // Creates either a local or remote note
     async function createNote(file: string | undefined) {
+        // Remote note
         if (session_token && session_token !== "null" && session_token !== "undefined") {
             await invoke('add_note', { 
                 name: `${newFileName}.md`,
                 nid: notebook_id
              });
-        
+            
+        // Local note
         } else {
             let filePath = `${notebookPath}/${notebookName}/${file}.md`;
             await invoke<string>('create_file', { path: filePath });
@@ -152,6 +175,7 @@
         toast.success('File Created!')
     }
 
+    // Toggles between edit markdown mode and preview markdown mode
     function modeNotification() {
         toggleMarkdown = !toggleMarkdown;
 
@@ -167,7 +191,9 @@
         }
     }
 
+    // OpenAI API call for Neuro prompt
     async function ask_neuro(prompt: string) {
+        // adjustment to user's base prompt
         let adjustedPrompt = `${prompt}\n\nPlease respond in markdown and dont exceed 3 paragraphs.`;
         const response = await toast.promise(
             invoke<string>("neuro", { prompt: adjustedPrompt }),
@@ -183,11 +209,14 @@
         userPrompt = "";
     }
 
+    // Redirects back to notebook page
     function goBack() {
         goto('./');
     }
 
+    // On initial page load
     onMount(async() => {
+        // setting user session data
         if (session_token && session_token !== "null" && session_token !== "undefined") {
             account = await invoke('get_user_data', { sessionToken: session_token });
             user_id = await invoke('get_id', {email: account.email});
@@ -195,6 +224,8 @@
         }
 
         loadNotes();
+
+        // opens top file upon load
         let firsFilePath = await invoke<string>('get_first_file', {
             path: `${notebookPath}/${notebookName}`}
         )
@@ -209,7 +240,7 @@
 <main class="h-screen w-screen bg-zinc-900 text-white flex flex-col">
     <div class="h-screen w-65 flex-1 absolute bg-zinc-800 transistion duration-400 ease-in-out z-0"
         class:w-0={!toggle} 
-        class:w-65={toggle}>
+        class:w-65={toggle}> <!-- toggle sidebar -->
         
         {#if !toggleAIModal}
             <Toaster />
@@ -219,8 +250,9 @@
         class:flex-row={toggle}
         class:flex-col={!toggle}
         class:space-x-11={toggle}
-        class:space-y-5={!toggle}>
+        class:space-y-5={!toggle}> <!-- top row buttons -->
 
+            <!-- hamburger to toggle side bar -->
             <Button clickEvent={() => toggle = !toggle}>
                 <svg
                 class="w-7 h-7 group-hover:text-orange-500 transistion-colors duration-200"
@@ -234,6 +266,7 @@
                 </svg>
             </Button>
 
+            <!-- create file button -->
             <Button clickEvent={() => toggleCreateModal = !toggleCreateModal}>
                 <svg xmlns="http://www.w3.org/2000/svg"
                 class="group-hover:text-orange-500 transistion-colors duration-200"
@@ -246,6 +279,7 @@
                 </svg>
             </Button>
 
+            <!-- Delete file button -->
             <Button clickEvent={deleteNote}>
                 <svg xmlns="http://www.w3.org/2000/svg"
                 class="group-hover:text-orange-500 transistion-colors duration-200"
@@ -266,9 +300,11 @@
         <div>
             <div class="absolute w-full border-t border-zinc-700 text-xs text-zinc-400 z-10"></div>
 
+            <!-- file tree -->
             {#if toggle}
             <ul class="absolute w-full font-base antialiased z-1" class:whitespace-wrap={!toggle} transition:fly={{ x: -100 }}>
                 <li class="w-full block mt-5">
+                    <!-- arrow that can hide/show file tree -->
                     <button class="group flex items-center w-full font-semibold hover:bg-zinc-700 px-4 py-1 transition-colors duration-200 antialiased"
                     on:click={() => toggleTree = !toggleTree}>
                         <svg 
@@ -279,14 +315,17 @@
                             viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                         </svg>
+                        
+                        <!-- Notebook name -->
                         <span class="ml-3">{notebookName}</span>
                     </button>
 
                     {#if toggleTree}
                     <ul class="pt-1">
+                        <!-- Loops through all files and lists them as a tree -->
                         {#each notes as note (note.name)}
                             <button class="w-full p-0.5 pl-10 flex items-center space-x-2 hover:bg-zinc-700 transistion-colors duration-200 antialiased"
-                            on:click={() => openNote(note.name)}>
+                            on:click={() => openNote(note.name)}> <!-- Open up text editor for that note -->
                                 <svg
                                 class="w-4 h-4 text-gray-500"
                                 class:text-orange-600={note.name == currentNote.split("/").pop()}
@@ -320,8 +359,9 @@
             class:flex-col-reverse={!toggle}
             class:space-x-11={toggle}
             class:space-y-5={!toggle}
-            class:space-y-reverse={!toggle}>
+            class:space-y-reverse={!toggle}> <!-- Bottom row buttons -->
             
+            <!-- Back button that redirects back to notebooks page -->
             <Button clickEvent={goBack}>
                 <svg 
                     class="w-5 h-5 group-hover:text-orange-600 transform transition-transform duration-200 ease-in-out"
@@ -332,6 +372,7 @@
                 </svg>
             </Button>
 
+            <!-- Save button to write changes -->
             <Button clickEvent={() => saveNote(markdown)}>
                 <svg xmlns="http://www.w3.org/2000/svg"
                 class="group-hover:text-orange-600 transform transition-transform duration-200 ease-in-out"
@@ -348,6 +389,7 @@
                   </svg> 
             </Button>
 
+            <!-- 'Neuro' button to ask for AI assistance -->
             <Button clickEvent={() => toggleAIModal = !toggleAIModal}>
                 <svg xmlns="http://www.w3.org/2000/svg"
                 class="group-hover:text-orange-600 transform transition-transform duration-200 ease-in-out"
@@ -369,6 +411,7 @@
         
     </div>
 
+    <!-- Preview button that toggles between edit and preview mode -->
     <Button clickEvent={modeNotification} extraClasses=" ml-auto mt-7 mr-7">
         <svg 
         xmlns="http://www.w3.org/2000/svg"
@@ -385,18 +428,21 @@
         </svg>  
     </Button>
 
+    <!-- Text editor -->
     <div class="prose prose-invert transition-all duration-400 ease-in-out" 
     class:ml-30={!toggle}
     class:ml-70={toggle}
     class:display-none={!toggleNote}>
         {#if toggleMarkdown}
             <textarea class="w-[70vw] h-[100vh] p-4 focus:outline-none focus:none resize-none font-mono" 
-            bind:value={markdown} placeholder="Type Markdown here..."></textarea>
+            bind:value={markdown} placeholder="Type Markdown here..."></textarea> <!-- Default text if nothing in written -->
 
         {:else}
+            <!-- load markdown as html -->
             {@html content}
         {/if}
 
+        <!-- word counter -->
         <div class="absolute bottom-0 right-4 pr-3">
             <p class="flex items-center justify-center bg-zinc-900 text-center text-sm w-25 h-8 rounded-4xl border border-gray-500">
                 {#if wordCount == 1}
@@ -409,11 +455,13 @@
         </div>
     </div>
 
+    <!-- Create file modal -->
     {#if toggleCreateModal}
     <div class="fixed inset-0 backdrop-blur-md flex items-center justify-center z-50">
       <div class="bg-zinc-800 text-white p-6 rounded-lg w-full max-w-md shadow-lg">
         <h2 class="text-xl font-bold mb-4">Create a New Note</h2>
 
+        <!-- Input field -->
         <div class="relative">
             <input
             type="text"
@@ -426,12 +474,14 @@
             </span>
         </div>
 
+        <!-- Cancel button -->
         <div class="flex justify-end gap-2 mt-6">
           <button class="px-4 py-2 bg-zinc-600 rounded-md hover:bg-zinc-700 transition"
             on:click={() => toggleCreateModal = false}>
             Cancel
           </button>
 
+          <!-- Creates note -->
           <button
             class="px-4 py-2 bg-orange-700 rounded-md hover:bg-orange-600 transition"
             on:click={() => {createNote(newFileName)}}>
@@ -442,13 +492,14 @@
     </div>
     {/if}
 
-
+    <!-- Neuro prompt modal -->
     {#if toggleAIModal}
         <Toaster />
         <div class="fixed inset-0 backdrop-blur-md flex items-center justify-center z-50">
         <div class="bg-zinc-800 text-white p-6 rounded-lg w-full max-w-md shadow-lg">
             <h2 class="text-xl font-bold mb-4">Hi, Neuro here! 😊</h2>
 
+            <!-- Input field -->
             <div class="relative">
                 <input
                 type="text"
@@ -458,12 +509,14 @@
                 />
             </div>
 
+            <!-- Cancel button -->
             <div class="flex justify-end gap-2 mt-6">
             <button class="px-4 py-2 bg-zinc-600 rounded-md hover:bg-zinc-700 transition"
                 on:click={() => toggleAIModal = false}>
                 Cancel
             </button>
 
+            <!-- Injects AI response into current file -->
             <button
                 class="px-4 py-2 bg-orange-700 rounded-md hover:bg-orange-600 transition"
                 on:click={() => {ask_neuro(userPrompt)}}>

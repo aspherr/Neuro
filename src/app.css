@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+/* Custom Fonts */
 @font-face {
     font-family: 'Satoshi';
     src: url('/fonts/Satoshi-Light.ttf') format('truetype');

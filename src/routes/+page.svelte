@@ -6,15 +6,18 @@
 
   let appVersion = 'loading...';
 
+  //  On initial page load
   onMount(async() => {
     appVersion = await invoke ('get_app_version');
     localStorage.removeItem("session_token");
   });
 
+  // Redirects to vault creation page
   function createVault() {
     goto("/create-vault");
   }
 
+  // Opens vault url
   const openVault = async () => {
     try {
       const path = await open({
@@ -32,7 +35,8 @@
       console.error(err);
     }
   }
-
+  
+  // Redirects to user authentication page
   function login() {
     goto('./user-auth/login');
   }
@@ -40,10 +44,11 @@
 
 
 <main class="h-screen w-screen bg-zinc-900 text-white">
+  
+  <!-- Title and logo -->
   <div>
     <img src="/logo.png" alt="Neuro Logo" class="w-42 h-48 mx-auto pt-6"/>
   </div>
-
   <div class="text-center">
     <h1 class="Satoshi font-bold text-5xl -mt-7">Neuro</h1>
     <p class="Satoshi text-base text-gray-400">Version: {appVersion}</p>
@@ -52,6 +57,7 @@
   <div class="mt-11 w-full flex flex-col items-center">
     <div class="w-full max-w-md mx-auto mt-6 space-y-3">
 
+        <!-- Create vault button -->
       <div class="flex justify-between items-center px-1 py-3 border-b border-gray-700">
           <div>
               <h3 class="text-white text-lg font-medium">Create new vault</h3>
@@ -63,7 +69,7 @@
           </button>
       </div>
   
-
+      <!-- Open local vault button -->
       <div class="flex justify-between items-center px-1 py-3 border-b border-gray-700">
           <div>
               <h3 class="text-white text-lg font-medium">Open folder as vault</h3>
@@ -75,6 +81,7 @@
           </button>
       </div>
 
+      <!-- Sign in to remote vault button -->
       <div class="flex justify-between items-center px-1 py-3 border-b border-gray-700">
         <div>
             <h3 class="text-white text-lg font-medium">Open vault from Neuro sync</h3>
