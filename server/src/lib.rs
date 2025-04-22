@@ -8,7 +8,7 @@ use simple_logger;
 use llm::ai::call_neuro;
 use db::{client::{get_user_id, get_user_session_data, delete_session}, 
     models::User, 
-    ops::{create_user, create_vault, get_user, get_vaults,  get_vault_id, delete_vault}
+    ops::{create_user, create_vault, get_user, get_vaults,  get_vault_id, delete_vault, create_notebook, get_notebooks}
 };
 use bcrypt::{hash, DEFAULT_COST};
 
@@ -94,6 +94,20 @@ async fn logout(token: String, id: String) -> Result<bool, String> {
         .map_err(|e| e.to_string())
 }
 
+#[command]
+async fn add_notebook(name: String, id: String) -> Result<String, String> {
+    create_notebook(name, id)
+        .await
+        .map_err(|e| e.to_string())
+}
+
+#[command]
+async fn get_notebook_names(id: String) -> Result<Vec<String>, String> {
+    get_notebooks(id)
+        .await
+        .map_err(|e| e.to_string())
+}
+
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -115,6 +129,8 @@ pub fn run() {
             vault_id,
             drop_vault,
             logout,
+            add_notebook,
+            get_notebook_names,
             files::read_file,
             files::save_file,
             files::delete_file,

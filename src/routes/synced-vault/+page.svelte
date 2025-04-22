@@ -41,6 +41,9 @@
       loadVaults();
     }
 
+    async function open_vault(vault: string) {
+      goto(`../open-vault/${vault}`);
+    }
 
     async function delete_vault(name: string) {
         const confirmDelete = await ask('This action cannot be reverted. Are you sure?', {
@@ -143,7 +146,8 @@
       <div class="grid grid-cols-2 md:grid-cols-2 gap-4">
         {#each names as vaultName}
         <div class="relative group">
-          <button class="p-1 py-10 w-full min-h-[250px] bg-zinc-800 hover:bg-zinc-700 transition cursor-pointer border-t-5 border-orange-600 rounded">
+          <button class="p-1 py-10 w-full min-h-[250px] bg-zinc-800 hover:bg-zinc-700 transition cursor-pointer border-t-5 border-orange-600 rounded"
+          on:click={() => open_vault(vaultName)}>
             <h2 class="font-bold text-lg">{vaultName}</h2>
           </button>
 

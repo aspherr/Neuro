@@ -8,6 +8,7 @@
 
   onMount(async() => {
     appVersion = await invoke ('get_app_version');
+    localStorage.removeItem("session_token");
   });
 
   function createVault() {

@@ -114,3 +114,38 @@ pub async fn delete_vault(vault_id: String, vault_name: String, user_id: String)
 
     Ok(())
 }
+
+pub async fn create_notebook(name: String, user_id: String) -> RedisResult<String> {
+    let mut connection = conn().await?;
+    
+    let id: String = Uuid::new_v4().to_string();
+    let notebook_key: String = format!("notebook:{}", id);
+    let notebook_set_key: String = format!("notebook:{}", user_id);
+
+    let notebook_name_key: String = format!("notebook:{}", name);
+    let _: () = connection.set(notebook_name_key, &notebook_key).await?;
+
+    let _: () = connection.hset_multiple(
+        &notebook_key, 
+        &[("name", name), ("user_id", user_id)]
+    ).await?;
+
+    let _: () = connection.sadd(&notebook_set_key, &notebook_key).await?;
+
+    Ok(notebook_key)
+}
+
+pub async fn get_notebooks(user_id: String) -> RedisResult<Vec<String>> {
+    let mut connection = conn().await?;
+    
+    let notebook_set_key: String = format!("notebook:{}", user_id);
+    let notebook_keys: Vec<String> = connection.smembers(&notebook_set_key).await?;
+
+    let mut notebook_names: Vec<String> = Vec::new();
+    for id in notebook_keys {
+        let name = connection.hget(&id, "name").await?;
+        notebook_names.push(name);
+    }
+
+    Ok(notebook_names)
+}

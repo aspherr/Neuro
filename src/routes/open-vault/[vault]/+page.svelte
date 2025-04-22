@@ -12,6 +12,7 @@
     const win = Window.getCurrent();
     let showModal = false;
     let notebookName = '';
+    $: session_token = localStorage.getItem("session_token");
 
     export let data: {  
         vaultPath: string;
@@ -24,7 +25,22 @@
         children?: NotebookEntry[];
         isDir: boolean;
     };
+
+    type RemoteNotebookEntry = {
+        name: string;
+    };
+
     let notebooks: NotebookEntry[] = [];
+    let remoteNotebooks: RemoteNotebookEntry[] = [];
+
+    $: notebookPanes = session_token ? remoteNotebooks : notebooks;
+  
+    interface User {
+      forename: string;
+      email: string;
+    }
+    let account: User;
+    let user_id = "";
 
     async function createNotebook() {
       if (!notebookName.trim()) {
@@ -32,8 +48,17 @@
         return;
       }
 
-      const notebookPath = `${decodedPath}/${notebookName}`;
-      await invoke<string>('create_folder', { path: notebookPath });
+      if (session_token && session_token !== "null" && session_token !== "undefined") {
+        await invoke('add_notebook', {
+          name: notebookName,
+          id: user_id
+        })
+
+      } else {
+        const notebookPath = `${decodedPath}/${notebookName}`;
+        await invoke<string>('create_folder', { path: notebookPath });
+      }
+
       toast.success('Notebook Created!');
 
       await loadNotebooks();
@@ -43,6 +68,12 @@
     }
 
     async function loadNotebooks() {
+      if (session_token && session_token !== "null" && session_token !== "undefined") {
+        remoteNotebooks = (await invoke<string[]>('get_notebook_names', { id: user_id }))
+        .map(name => ({ name }));
+        return;
+      }
+      
       const result = await readDir(decodedPath);
       notebooks = (result as unknown as NotebookEntry[])
       .filter(entry => entry.name && !entry.name.startsWith('.'))
@@ -85,6 +116,10 @@
     onMount(async() => {
         await win.setSize(new LogicalSize(1400, 1000));
         await win.center();
+        if (session_token && session_token !== "null" && session_token !== "undefined") {
+        account = await invoke('get_user_data', { sessionToken: session_token });
+        user_id = await invoke('get_id', {email: account.email});
+        }
         await loadNotebooks();
     });
 
@@ -143,14 +178,14 @@
 
     <!-- Main content -->
     <div class="flex-1 p-6 overflow-auto">
-      {#if notebooks.length === 0}
+      {#if notebookPanes.length === 0}
         <div class="pt-2 text-gray-400">
           <p class="mb-4">You haven't created any notebooks yet.</p>
         </div>
       
       {:else}
       <div class="grid grid-cols-2 md:grid-cols-6 gap-4">
-        {#each notebooks as notebook (notebook.name)}
+        {#each notebookPanes as notebook (notebook.name)}
         <div class="relative group">
           <button class="p-4 py-6 w-full min-h-[250px] bg-zinc-800 hover:bg-zinc-700 transition cursor-pointer border-l-5 border-orange-600 rounded"
             on:click={() => openNotebook(notebook.name)}>
