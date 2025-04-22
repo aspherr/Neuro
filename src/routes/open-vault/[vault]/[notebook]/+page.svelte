@@ -354,7 +354,9 @@
 
         <div class="flex items-start mx-7 transition-all duration-400 ease-in-out transform"
             class:my-[760px]={toggle}
-            class:my-[530px]={!toggle}
+            class:my-[630px]={!toggle}
+            class:pt-23={toggle}
+            class:pt-0={!toggle}
             class:flex-row={toggle}
             class:flex-col-reverse={!toggle}
             class:space-x-11={toggle}
